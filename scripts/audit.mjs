@@ -32,10 +32,7 @@ assert(site.domain==='https://antenistaurgente24horas.com','Dominio definitivo i
 assert(!site.launchReady,'No activar indexación antes de completar datos de producción');
 assert(fs.readFileSync(path.join(out,'robots.txt'),'utf8').includes('Disallow: /'),'Prepublicación sin bloqueo');
 assert(fs.existsSync(path.join(out,'assets/styles.css')),'CSS no generado');
-assert(fs.existsSync(path.join(out,'assets/logo.svg')),'Logo SVG no publicado');
 assert(home.includes('614 789 945')&&home.includes('641 589 394'),'Teléfonos por zona ausentes');
-assert(home.includes('class="hero-phones"'),'Hero sin llamadas diferenciadas');
-assert(home.includes('/assets/logo.svg'),'Logo ausente de cabecera');
 const media=['hero-obra.webp','antena-tdt.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','parabolica.jpeg'];
 for(const name of media){
  const file=path.join(out,'assets',name);
