@@ -52,6 +52,9 @@ assert((home.match(/class="photo-card"/g)||[]).length===3,'Deben mostrarse tres 
 assert(home.includes('logo-antena.svg'),'Logotipo ausente');
 assert(home.includes('class="brand-bar"'),'Marcas ausentes');
 assert(home.includes('class="zones-bar"'),'Zonas destacadas ausentes');
+assert(home.includes('id="provincias"'),'Directorio provincial ausente');
+assert(home.includes('class="technical-grid"'),'Servicios técnicos ampliados ausentes');
+for(const p of ['madrid','bizkaia','cuenca','burgos'])assert(fs.existsSync(path.join(out,'provincias',p,'index.html')),'Provincia ausente '+p);
 assert(fs.existsSync(path.join(out,'assets','logo-antena.svg')),'Logo SVG no copiado');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
