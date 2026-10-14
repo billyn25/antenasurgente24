@@ -1,0 +1,46 @@
+{
+  "brand": "Antenista Urgente 24 Horas",
+  "domain": null,
+  "primaryPhone": "641 589 394",
+  "centralPhone": null,
+  "centralProvinces": [
+    "madrid",
+    "guadalajara",
+    "toledo",
+    "cuenca"
+  ],
+  "launchReady": false,
+  "services": [
+    {
+      "id": "antenas",
+      "title": "Antenas TDT y parabólicas",
+      "subtitle": "Instalación, reparación y amplificación"
+    },
+    {
+      "id": "porteros",
+      "title": "Porteros automáticos",
+      "subtitle": "Telefonillos, placas, audio y apertura"
+    },
+    {
+      "id": "videoporteros",
+      "title": "Videoporteros",
+      "subtitle": "Monitores, cámaras y renovación"
+    }
+  ],
+  "antennaBrands": [
+    "Televés",
+    "Alcad",
+    "Ikusi",
+    "Fagor",
+    "Rover",
+    "FTE Maximal"
+  ],
+  "doorphoneBrands": [
+    "Fermax",
+    "Tegui",
+    "Golmar",
+    "Comelit",
+    "BTicino",
+    "Legrand"
+  ]
+}
