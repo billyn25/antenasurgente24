@@ -48,7 +48,7 @@ fs.copyFileSync('src/styles.css',path.join(OUT,'assets/styles.css'));
 for(const [key,url] of Object.entries(media)){
  const source=path.join('src/media',path.basename(url));
  if(!fs.existsSync(source))throw Error('Imagen ausente: '+source);
- fs.copyFileSync(source,path.join(OUT,url.slice('/assets/'.length)));
+ fs.copyFileSync(source,path.join(OUT,'assets',path.basename(url)));
 }
 const write=(url,content)=>{
  const file=path.join(OUT,url==='/'?'index.html':url.slice(1)+'index.html');
