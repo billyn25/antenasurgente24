@@ -14,6 +14,6 @@ export function contactForProvince(provinceSlug){
 export function contactsForHome(){
  return [
   {label:'Madrid, Guadalajara, Toledo y Cuenca',...contactForProvince('madrid')},
-  {label:'Resto de provincias',...contactForProvince('bizkaia')}
+  {label:'Zona Norte y otras provincias de cobertura',...contactForProvince('bizkaia')}
  ];
 }
