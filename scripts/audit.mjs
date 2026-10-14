@@ -13,7 +13,7 @@ for(const url of pages){
  assert((html.match(/<h1\b/g)||[]).length===1,url+': debe tener un H1');
  assert(html.includes('name="robots" content="noindex,nofollow"'),url+': noindex de prepublicación');
  assert(html.includes('href="/assets/styles.css"'),url+': CSS ausente');
- assert(html.includes('tel:+34641589394'),url+': teléfono habitual ausente');
+ assert(html.includes('href="/#telefonos-zonas"'),url+': enlace a contactos por zona ausente');
  assert(html.includes('Urgencias 24'),url+': urgencias ausentes');
 }
 const home=fs.readFileSync(path.join(out,'index.html'),'utf8');
@@ -32,5 +32,22 @@ assert(site.domain==='https://antenistaurgente24horas.com','Dominio definitivo i
 assert(!site.launchReady,'No activar indexación antes de completar datos de producción');
 assert(fs.readFileSync(path.join(out,'robots.txt'),'utf8').includes('Disallow: /'),'Prepublicación sin bloqueo');
 assert(fs.existsSync(path.join(out,'assets/styles.css')),'CSS no generado');
+const media=['hero-obra.webp','antena-tdt.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','parabolica.jpeg'];
+for(const name of media){
+ const file=path.join(out,'assets',name);
+ assert(fs.existsSync(file),'Imagen no copiada: '+name);
+ if(fs.existsSync(file))assert(fs.statSync(file).size>5000,'Imagen vacía o demasiado pequeña: '+name);
+}
+for(const url of pages){
+ const file=path.join(out,url==='/'?'index.html':url.slice(1)+'index.html');
+ const html=fs.readFileSync(file,'utf8');
+ for(const match of html.matchAll(/<img[^>]+src=["'](\/assets\/[^"']+)["']/g)){
+  assert(fs.existsSync(path.join(out,match[1].slice(1))),url+': imagen rota '+match[1]);
+ }
+}
+assert(home.includes('class="hero-mosaic"'),'Hero fotográfico nuevo ausente');
+assert(home.includes('class="service-nav"'),'Accesos a las tres especialidades ausentes');
+assert((home.match(/class="hero-shot"/g)||[]).length===3,'Hero debe mostrar tres fotografías');
+
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
 console.log('AUDITORÍA OK: 4 páginas, 3 servicios, marcas, enlaces, responsive CSS y protección noindex.');
