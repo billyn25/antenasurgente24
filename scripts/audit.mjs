@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import site from '../config/site.json' with {type:'json'};
+import {contactForProvince} from './contacts.mjs';
 const out='dist',errors=[];
 const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
 const pages=['/','/servicios/antenas/','/servicios/porteros/','/servicios/videoporteros/'];
@@ -18,6 +19,16 @@ for(const url of pages){
 const home=fs.readFileSync(path.join(out,'index.html'),'utf8');
 for(const s of site.services)assert(home.includes('href="/servicios/'+s.id+'/"'),'Servicio no enlazado: '+s.id);
 for(const brand of [...site.antennaBrands,...site.doorphoneBrands])assert(home.includes(brand),'Marca ausente: '+brand);
+for(const p of ['madrid','guadalajara','toledo','cuenca']){
+ const x=contactForProvince(p);
+ assert(x.phone==='614 789 945'&&x.whatsapp==='34614789945',p+': teléfono nuevo incorrecto');
+}
+for(const p of ['bizkaia','burgos','cantabria','navarra']){
+ const x=contactForProvince(p);
+ assert(x.phone==='641 589 394'&&x.whatsapp==='34641589394',p+': teléfono habitual incorrecto');
+}
+assert(home.includes('614 789 945')&&home.includes('641 589 394'),'Portada: contactos regionales no visibles');
+assert(site.domain==='https://antenistaurgente24horas.com','Dominio definitivo incorrecto');
 assert(!site.launchReady,'No activar indexación antes de completar datos de producción');
 assert(fs.readFileSync(path.join(out,'robots.txt'),'utf8').includes('Disallow: /'),'Prepublicación sin bloqueo');
 assert(fs.existsSync(path.join(out,'assets/styles.css')),'CSS no generado');
