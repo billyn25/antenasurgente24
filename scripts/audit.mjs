@@ -49,9 +49,13 @@ for(const url of pages){
   assert(fs.existsSync(path.join(out,match[1].slice(1))),url+': imagen rota '+match[1]);
  }
 }
-assert(home.includes('class="hero-mosaic"'),'Hero fotográfico nuevo ausente');
-assert(home.includes('class="service-nav"'),'Accesos a las tres especialidades ausentes');
-assert((home.match(/class="hero-shot"/g)||[]).length===3,'Hero debe mostrar tres fotografías');
+assert(home.includes('class="hero-image"'),'Hero fotográfico de portada ausente');
+assert(home.includes('class="service-photos"'),'Tres tarjetas de servicio ausentes');
+assert((home.match(/class="photo-card"/g)||[]).length===3,'Deben mostrarse tres servicios con fotografía');
+assert(home.includes('logo-antena.svg'),'Logotipo ausente');
+assert(home.includes('class="brand-bar"'),'Marcas ausentes');
+assert(home.includes('class="zones-bar"'),'Zonas destacadas ausentes');
+assert(fs.existsSync(path.join(out,'assets','logo-antena.svg')),'Logo SVG no copiado');
 
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
 console.log('AUDITORÍA OK: 4 páginas, 3 servicios, marcas, enlaces, responsive CSS y protección noindex.');
