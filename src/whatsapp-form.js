@@ -1,18 +1,34 @@
-document.addEventListener('DOMContentLoaded',()=>{
- const form=document.querySelector('#whatsapp-aviso');if(!form)return;
- const status=document.querySelector('#whatsapp-status');
- form.addEventListener('submit',e=>{
-  e.preventDefault();
-  const data=new FormData(form);
-  const province=String(data.get('provincia')||'');
-  const town=String(data.get('municipio')||'').trim();
-  const issue=String(data.get('averia')||'').trim();
-  const contact=String(data.get('telefono')||'').trim();
-  if(!province||!town||!issue){status.textContent='Completa provincia, municipio y avería.';return;}
-  const central=['madrid','guadalajara','toledo','cuenca'].includes(province);
-  const phone=central?'34614789945':'34641589394';
-  const msg=['Hola, necesito asistencia técnica.','Servicio: '+data.get('servicio'),'Provincia: '+province,'Municipio: '+town,'Avería o instalación: '+issue,contact?'Mi teléfono: '+contact:''].filter(Boolean).join('\n');
-  status.textContent='Se abrirá WhatsApp con tu mensaje preparado.';
-  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+'use strict';
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const search=document.querySelector('[data-town-filter]');
+if(search){
+ const rows=[...document.querySelectorAll('[data-town]')];
+ const count=document.getElementById('filter-status');
+ search.addEventListener('input',()=>{
+  const q=norm(search.value.trim());let visible=0;
+  for(const row of rows){row.hidden=!norm(row.dataset.town).includes(q);if(!row.hidden)visible++;}
+  for(const group of document.querySelectorAll('.town-group'))group.hidden=![...group.querySelectorAll('[data-town]')].some(row=>!row.hidden);
+  count.textContent=visible?`${visible} municipios encontrados`:'No hay coincidencias. Prueba con parte del nombre.';
  });
-});
+}
+const form=document.getElementById('whatsapp-aviso');
+if(form){
+ const status=document.getElementById('whatsapp-status');
+ const province=form.elements.provincia;
+ const update=()=>{
+  const option=province.selectedOptions[0];
+  status.textContent=option?.dataset.phone?`Tu consulta se preparará para ${option.dataset.phone}. Tú decides cuándo enviarla.`:'Selecciona la provincia para usar el teléfono correcto.';
+ };
+ province.addEventListener('change',update);update();
+ form.addEventListener('submit',event=>{
+  event.preventDefault();if(!form.reportValidity())return;
+  const option=province.selectedOptions[0],number=option?.dataset.whatsapp;
+  if(!/^34[6789]\d{8}$/.test(number||'')){status.textContent='Selecciona una provincia válida o utiliza el teléfono de contacto.';return;}
+  const data=new FormData(form);
+  const message=['Hola, necesito información sobre '+data.get('servicio')+'.','Municipio: '+String(data.get('municipio')).trim()+'.','Provincia: '+option.textContent+'.','Consulta: '+String(data.get('averia')).trim(),data.get('telefono')?'Mi teléfono: '+String(data.get('telefono')).trim():''].filter(Boolean).join('\n');
+  const url='https://wa.me/'+number+'?text='+encodeURIComponent(message);
+  const link=document.createElement('a');link.href=url;link.textContent='Abrir de nuevo la consulta en WhatsApp';link.target='_blank';link.rel='noopener noreferrer';
+  status.replaceChildren(document.createTextNode('Mensaje preparado. '),link);
+  window.open(url,'_blank','noopener,noreferrer');
+ });
+}

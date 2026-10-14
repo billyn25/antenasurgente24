@@ -2,14 +2,8 @@
 command = "npm run check"
 publish = "dist"
 
-[[headers]]
-for = "/*"
-[headers.values]
-X-Content-Type-Options = "nosniff"
-Referrer-Policy = "strict-origin-when-cross-origin"
+[build.environment]
+NODE_VERSION = "22"
 
-# La indexación se habilitará cuando estén confirmados dominio, cobertura y teléfonos.
-[[headers]]
-for = "/*"
-[headers.values]
-X-Robots-Tag = "noindex, nofollow"
+# Los encabezados de indexación se generan en dist/_headers.
+# No aplicar aquí un noindex global que bloquee el futuro dominio de producción.

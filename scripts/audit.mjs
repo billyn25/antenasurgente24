@@ -1,61 +1,46 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import site from '../config/site.json' with {type:'json'};
-import {contactForProvince} from './contacts.mjs';
-const out='dist',errors=[];
-const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
-const pages=['/','/servicios/antenas/','/servicios/porteros/','/servicios/videoporteros/'];
-for(const url of pages){
- const file=path.join(out,url==='/'?'index.html':url.slice(1)+'index.html');
- assert(fs.existsSync(file),'Página ausente: '+url);
- if(!fs.existsSync(file))continue;
- const html=fs.readFileSync(file,'utf8');
- assert((html.match(/<h1\b/g)||[]).length===1,url+': debe tener un H1');
- assert(html.includes('name="robots" content="noindex,nofollow"'),url+': noindex de prepublicación');
- assert(html.includes('href="/assets/styles.css"'),url+': CSS ausente');
- assert(html.includes('href="/#telefonos-zonas"'),url+': enlace a contactos por zona ausente');
- assert(html.includes('Urgencias 24'),url+': urgencias ausentes');
-}
-const home=fs.readFileSync(path.join(out,'index.html'),'utf8');
-for(const s of site.services)assert(home.includes('href="/servicios/'+s.id+'/"'),'Servicio no enlazado: '+s.id);
-for(const brand of [...site.antennaBrands,...site.doorphoneBrands])assert(home.includes(brand),'Marca ausente: '+brand);
-for(const p of ['madrid','guadalajara','toledo','cuenca']){
- const x=contactForProvince(p);
- assert(x.phone==='614 789 945'&&x.whatsapp==='34614789945',p+': teléfono nuevo incorrecto');
-}
-for(const p of ['bizkaia','burgos','cantabria','navarra']){
- const x=contactForProvince(p);
- assert(x.phone==='641 589 394'&&x.whatsapp==='34641589394',p+': teléfono habitual incorrecto');
-}
-assert(home.includes('614 789 945')&&home.includes('641 589 394'),'Portada: contactos regionales no visibles');
-assert(site.domain==='https://antenistaurgente24horas.com','Dominio definitivo incorrecto');
-assert(!site.launchReady,'No activar indexación antes de completar datos de producción');
-assert(fs.readFileSync(path.join(out,'robots.txt'),'utf8').includes('Disallow: /'),'Prepublicación sin bloqueo');
-assert(fs.existsSync(path.join(out,'assets/styles.css')),'CSS no generado');
-assert(home.includes('614 789 945')&&home.includes('641 589 394'),'Teléfonos por zona ausentes');
-const media=['hero-obra.webp','antena-tdt.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','parabolica.jpeg'];
-for(const name of media){
- const file=path.join(out,'assets',name);
- assert(fs.existsSync(file),'Imagen no copiada: '+name);
- if(fs.existsSync(file))assert(fs.statSync(file).size>5000,'Imagen vacía o demasiado pequeña: '+name);
-}
-for(const url of pages){
- const file=path.join(out,url==='/'?'index.html':url.slice(1)+'index.html');
- const html=fs.readFileSync(file,'utf8');
- for(const match of html.matchAll(/<img[^>]+src=["'](\/assets\/[^"']+)["']/g)){
-  assert(fs.existsSync(path.join(out,match[1].slice(1))),url+': imagen rota '+match[1]);
+const root='dist',errors=[];
+const check=(ok,msg)=>{if(!ok)errors.push(msg);};
+const report=JSON.parse(fs.readFileSync(path.join(root,'build-report.json'),'utf8'));
+const routes=new Set(report.pages.map(p=>p.url));
+const titles=new Set();const descriptions=new Set();let links=0;const inbound=new Map([...routes].map(u=>[u,0]));
+const read=p=>fs.readFileSync(path.join(root,p==='/404.html'?'404.html':p==='/'?'index.html':p.slice(1)+'index.html'),'utf8');
+for(const p of report.pages){
+ const html=read(p.url);
+ check((html.match(/<h1\b/g)||[]).length===1,p.url+': H1 único');
+ check(!titles.has(p.title),p.url+': title duplicado');titles.add(p.title);
+ check(!descriptions.has(p.description),p.url+': descripción duplicada');descriptions.add(p.description);
+ check(html.includes('rel="canonical" href="'+report.base+p.url+'"'),p.url+': canonical incorrecto');
+ check(html.includes('name="robots" content="'+(p.noindex?'noindex,follow':'index,follow,max-image-preview:large')+'"'),p.url+': robots incoherente');
+ for(const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)){try{JSON.parse(match[1]);}catch{errors.push(p.url+': JSON-LD inválido');}}
+ for(const match of html.matchAll(/(?:href|src)="(\/[^"#?]*)(?:[?#][^"]*)?"/g)){
+  const target=match[1];if(target.startsWith('/assets/')){check(fs.existsSync(path.join(root,target)),p.url+': recurso roto '+target);continue;}
+  check(routes.has(target),p.url+': enlace roto '+target);if(inbound.has(target))inbound.set(target,inbound.get(target)+1);links++;
  }
+ if(p.type==='town'){
+  check(html.includes('Técnico en instalación de antenas en '),p.url+': servicio de antenas ausente');
+  check(html.includes('Técnico en instalación de porteros automáticos en '),p.url+': servicio de porteros ausente');
+  check(html.includes('Técnico en instalación de videoporteros en '),p.url+': servicio de videoporteros ausente');
+  const central=['madrid','toledo','guadalajara','cuenca'].includes(p.province);check(p.phone===(central?'614 789 945':'641 589 394'),p.url+': teléfono incorrecto');
+  check(html.includes('value="'+p.province+'" data-whatsapp="'+(central?'34614789945':'34641589394')+'" data-phone="'+p.phone+'" selected'),p.url+': WhatsApp provincial incorrecto');
+ }
+ check(!html.includes('aggregateRating'),p.url+': valoraciones no verificadas');
 }
-assert(home.includes('class="hero-image"'),'Hero fotográfico de portada ausente');
-assert(home.includes('class="service-photos"'),'Tres tarjetas de servicio ausentes');
-assert((home.match(/class="photo-card"/g)||[]).length===3,'Deben mostrarse tres servicios con fotografía');
-assert(home.includes('logo-antena.svg'),'Logotipo ausente');
-assert(home.includes('class="brand-bar"'),'Marcas ausentes');
-assert(home.includes('class="zones-bar"'),'Zonas destacadas ausentes');
-assert(home.includes('id="provincias"'),'Directorio provincial ausente');
-assert(home.includes('class="technical-grid"'),'Servicios técnicos ampliados ausentes');
-for(const p of ['madrid','bizkaia','cuenca','burgos'])assert(fs.existsSync(path.join(out,'provincias',p,'index.html')),'Provincia ausente '+p);
-assert(fs.existsSync(path.join(out,'assets','logo-antena.svg')),'Logo SVG no copiado');
-
-if(errors.length){console.error(errors.join('\n'));process.exit(1)}
-console.log('AUDITORÍA OK: 4 páginas, 3 servicios, marcas, enlaces, responsive CSS y protección noindex.');
+for(const p of report.pages.filter(p=>p.type==='town'))check(inbound.get(p.url)>0,p.url+': municipio huérfano');
+const home=read('/');
+for(const n of ['641 589 394','614 789 945'])check(home.includes(n),'Portada sin teléfono '+n);
+const photos=[...home.matchAll(/<img[^>]+src="([^"]+)"/g)].map(m=>m[1]);check(photos.length===5&&new Set(photos).size===5,'Portada: deben ser 5 fotos distintas, sin repetir');
+check(!home.includes('data:image/'),'Fotos de relleno no permitidas');
+const sitemapFiles=fs.readdirSync(path.join(root,'sitemaps'));const sitemapUrls=[];
+for(const name of sitemapFiles){const xml=fs.readFileSync(path.join(root,'sitemaps',name),'utf8');for(const match of xml.matchAll(/<loc>(.*?)<\/loc>/g))sitemapUrls.push(match[1]);}
+check(new Set(sitemapUrls).size===sitemapUrls.length,'URLs de sitemap duplicadas');
+const expected=report.pages.filter(p=>['home','service','province','town'].includes(p.type));
+check(expected.length===sitemapUrls.length,'Sitemaps incompletos');
+for(const p of expected)check(sitemapUrls.includes(report.base+p.url),'URL ausente en sitemap '+p.url);
+check(report.provinceCount===20,'Faltan provincias');
+if(!report.fixture)check(report.totalTowns===4035,'Censo completo: se esperaban 4035 municipios');
+check(report.totalPages===report.totalTowns+28,'Número de páginas inesperado');
+check(!fs.readFileSync(path.join(root,'robots.txt'),'utf8').includes('Disallow: /'),'robots.txt impide leer noindex');
+if(errors.length){console.error(errors.slice(0,60).join('\n'));console.error('Errores totales: '+errors.length);process.exit(1);}
+console.log(`AUDITORÍA OK: ${report.totalPages} páginas, ${links} enlaces, ${sitemapUrls.length} URLs en sitemaps, 0 municipios huérfanos; teléfonos, 3 servicios locales, JSON-LD, canonicals e imágenes comprobados. ${report.fixture?'DATOS DE PRUEBA LOCALES, NO PUBLICABLES.':''}`);

@@ -1,14 +1,22 @@
-name: Validar nueva web
+name: Validar web y directorio municipal
 on:
   push:
-    branches: [main]
+    branches: [main, entrega-completa-20261014]
   workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: validar-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
       - run: npm run check
+      - name: Resumen del directorio
+        run: node -e "const r=JSON.parse(require('fs').readFileSync('dist/build-report.json')); delete r.pages; console.log(JSON.stringify(r,null,2))"
