@@ -1,0 +1,15 @@
+[build]
+command = "npm run check"
+publish = "dist"
+
+[[headers]]
+for = "/*"
+[headers.values]
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+# La indexación se habilitará cuando estén confirmados dominio, cobertura y teléfonos.
+[[headers]]
+for = "/*"
+[headers.values]
+X-Robots-Tag = "noindex, nofollow"
