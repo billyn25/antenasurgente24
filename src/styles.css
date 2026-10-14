@@ -44,3 +44,33 @@
 @media(max-width:850px){.nav{display:none}.hero .wrap{grid-template-columns:1fr;gap:28px;padding:45px 0}.hero-mosaic{max-width:700px;width:100%;grid-template-rows:180px 180px}.service-grid{grid-template-columns:1fr 1fr}.trust-grid{grid-template-columns:1fr}.brand-groups{grid-template-columns:1fr}.contact .wrap{align-items:flex-start;flex-direction:column}}
 @media(max-width:600px){.wrap{width:calc(100% - 30px)}.topbar .wrap{flex-direction:column;align-items:flex-start;gap:3px}.header .wrap{min-height:67px}.brand{font-size:17px}.header .btn{font-size:12px;padding:9px 12px;min-height:40px}.hero .wrap{padding:34px 0 30px}.hero h1{font-size:clamp(35px,9vw,45px)}.hero p{font-size:15px}.hero .actions .btn{flex:1 1 100%}.hero-mosaic{grid-template-columns:1fr 1fr;grid-template-rows:190px 130px;gap:8px}.hero-shot:first-child{grid-row:span 1;grid-column:span 2}.hero-shot figcaption{font-size:12px;bottom:10px;left:11px}.hero-stamp{top:-12px;right:-6px;padding:9px 12px}.hero-stamp strong{font-size:19px}.hero-stamp small{font-size:8px}.service-nav .wrap{grid-template-columns:1fr}.service-nav a,.service-nav a:first-child{border-left:0;border-right:0;border-bottom:1px solid var(--line);padding:15px 5px}.section{padding:52px 0}.service-grid,.gallery-grid,.regional-contacts{grid-template-columns:1fr}.service-art{height:220px}.service-body p{min-height:0}.brand-panel,.regional-contact{padding:21px}.regional-contact>strong{font-size:25px}.contact .wrap{gap:12px}.footer .wrap{flex-direction:column}.mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:fixed;z-index:45;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:9px 12px calc(9px + env(safe-area-inset-bottom))}.mobile-actions .btn{min-height:44px;font-size:12px;padding:10px}body{padding-bottom:72px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+
+/* Identidad 24H: logotipo propio y cabecera comercial. */
+.brand{display:inline-flex;align-items:center;gap:10px;flex-shrink:0;letter-spacing:normal}
+.brand img{width:62px;height:62px;object-fit:contain;flex-shrink:0}
+.brand-copy{display:flex;flex-direction:column;gap:3px;white-space:nowrap}
+.brand-copy>strong{font-family:Manrope,system-ui,sans-serif;font-size:23px;font-weight:900;letter-spacing:-.06em;line-height:1}
+.brand-copy>span{display:block;margin:0;color:#183e63;font-size:12px;letter-spacing:.025em;font-weight:900}
+.brand-copy b{color:#e3a800}
+.header-phone{display:flex;flex-direction:column;gap:2px;font-size:21px;min-width:220px;padding:10px 16px}
+.header-phone small{font-size:10px;font-weight:750}
+.hero{background:linear-gradient(105deg,#fff 0%,#f9fcff 55%,#e9f4ff 100%)}
+.hero .wrap{padding-top:60px;padding-bottom:60px}
+.hero h1{font-size:clamp(37px,4.5vw,62px)}
+.hero-phones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:26px}
+.hero-call{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:91px;padding:13px;border-radius:11px;text-align:center}
+.hero-call strong{font-family:Manrope,system-ui,sans-serif;font-size:clamp(19px,2.1vw,27px);letter-spacing:-.04em;white-space:nowrap}
+.hero-call small{font-size:11px;font-weight:750;line-height:1.3}
+.hero-call.primary{background:#ffcb18;color:#0d283f;box-shadow:0 8px 24px #b9870020}
+.hero-call.secondary{background:#fff;color:#1164b2;border:2px solid #2378bf}
+.hero-call:hover{filter:brightness(.97)}
+.hero-mosaic{grid-template-columns:1fr 1fr;grid-template-rows:210px 210px}
+.hero-shot:first-child{grid-row:span 2}
+.hero-shot:nth-child(2),.hero-shot:nth-child(3){background:#fff}
+.hero-shot:nth-child(2) img,.hero-shot:nth-child(3) img{padding:5px}
+.service-nav{border-top:0}
+.service-nav a{background:#fff}
+.service-nav strong{font-size:17px}
+@media(max-width:1100px){.nav{gap:13px;font-size:12px}.brand-copy>strong{font-size:20px}.header-phone{min-width:190px;font-size:18px}.hero-call strong{font-size:19px}}
+@media(max-width:850px){.header-phone{min-width:unset}.hero .wrap{padding-top:42px}.hero-phones{max-width:620px}}
+@media(max-width:600px){.brand{gap:5px}.brand img{width:44px;height:44px}.brand-copy>strong{font-size:16px}.brand-copy>span{font-size:9px}.header-phone{font-size:13px;min-width:unset;padding:9px}.header-phone small{display:none}.hero h1{font-size:clamp(34px,9vw,45px)}.hero-phones{grid-template-columns:1fr}.hero-call{min-height:70px}.hero-call strong{font-size:23px}.hero-mosaic{grid-template-rows:185px 135px}}
