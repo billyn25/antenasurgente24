@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {addFooterContacts,footerContactsHtml,verifyFooterContacts,footerContacts,footerContactStyles} from '../scripts/footer-contacts.mjs';
+import {contactForProvince} from '../scripts/contacts.mjs';
+const html='<!doctype html><html><head><title>Original</title><meta name="robots" content="noindex,follow"><link rel="canonical" href="https://example.org/"></head><body><header>Cabecera original</header><main><a href="tel:+34641589394">Contacto principal</a><a href="/provincias/madrid/">Madrid</a><img src="foto.webp" alt="Original"></main><footer class="footer"><section id="cobertura">Mapa conservado</section><a href="/cookies/">Cookies</a><span>Propiedad de R.F.G.</span></footer><div class="mobile-actions">Barra intacta</div></body></html>';
+const after=addFooterContacts(html);
+assert.equal(after.replace(footerContactsHtml(),''),html,'Nada fuera del panel cambia');
+assert.equal(addFooterContacts(after),after,'No duplica el pie');
+assert.deepEqual(verifyFooterContacts(after),{phoneLinks:2,whatsappLinks:2});
+assert.equal(footerContacts[0].display,'614 78 99 45');assert.equal(footerContacts[1].display,'641 589 394');
+for(const province of ['madrid','guadalajara','toledo','cuenca'])assert.equal(contactForProvince(province).tel,footerContacts[0].tel);
+assert.equal(contactForProvince('burgos').tel,footerContacts[1].tel);
+assert.throws(()=>addFooterContacts(html.replace('<footer class="footer">','<div>')));
+for(const [from,to] of [['614 78 99 45','614 00 00 00'],['tel:+34614789945','tel:+34641589394'],['wa.me/34641589394','wa.me/34614789945'],['Madrid, Guadalajara, Toledo y Cuenca','Madrid'],['id="telefonos-pie"','id="otro"']])assert.throws(()=>verifyFooterContacts(after.replace(from,to)));
+assert.throws(()=>verifyFooterContacts(after.replace('</footer>','<a href="tel:+34641589394">Duplicado</a></footer>')));
+assert.throws(()=>verifyFooterContacts(after.replace('</footer>',footerContactsHtml()+'</footer>')));
+assert(footerContactStyles.includes('repeat(2,minmax(0,1fr))'));assert(footerContactStyles.includes('@media(max-width:760px)'));assert(!footerContactsHtml().includes('<script'));
+console.log('PIE CONTACTOS TEST OK: dos zonas, Cuenca conservada, números clicables, WhatsApp, aislamiento e idempotencia.');

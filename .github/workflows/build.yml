@@ -35,6 +35,9 @@ jobs:
       - name: Verificar .com, 21 sitemaps e indexación en Netlify
         if: github.ref == 'refs/heads/main'
         run: node tests/publication-live.mjs
+      - name: Verificar teléfonos del pie publicados, móvil y sin JavaScript
+        if: github.ref == 'refs/heads/main'
+        run: node tests/footer-contacts-live.mjs
       - name: Capturas y métricas del navegador
         if: always()
         uses: actions/upload-artifact@v4

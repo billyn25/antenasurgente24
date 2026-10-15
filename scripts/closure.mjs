@@ -9,6 +9,7 @@ import {legalContent} from './legal-content.mjs';
 import {section,fileFor} from './starlink.mjs';
 import {localVersion,localProfiles,improveLocalContent,addServiceResources} from './local-content.mjs';
 import {prepareImages,responsiveHtml} from './responsive-images.mjs';
+import {addFooterContacts,footerContactStyles} from './footer-contacts.mjs';
 export const version='local-util-imagenes-v2';
 const e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const hash=s=>createHash('sha256').update(s).digest('hex').slice(0,12);
@@ -49,7 +50,7 @@ export async function applyClosure(root='dist',preparedImages=null){
  const deployment=resolveDeployment(site),oldBase=report.base;
  assert.equal(report.publicBuild,deployment.publicBuild,'Desajuste de indexación: revisar el dominio antes de publicar');
  const base=deployment.base,legal=legalContent(site),images=preparedImages||await prepareImages(root);
- const styles=['styles.css','residential.css','navigation.css','service-footer.css','starlink-norte.css','closure.css'].map(f=>fs.readFileSync(path.join('src',f),'utf8')).join('\n');
+ const styles=['styles.css','residential.css','navigation.css','service-footer.css','starlink-norte.css','closure.css'].map(f=>fs.readFileSync(path.join('src',f),'utf8')).join('\n')+'\n'+footerContactStyles;
  const css='site-'+hash(styles)+'.css';fs.writeFileSync(path.join(root,'assets',css),styles);
  let formJS=fs.readFileSync('src/whatsapp-form.js','utf8');
  // Only enable native submission after the handler that prevents it is attached.
@@ -72,6 +73,7 @@ export async function applyClosure(root='dist',preparedImages=null){
   html=html.replace('<button class="btn btn-green wide" type="submit">','<button class="btn btn-green wide" type="submit" disabled data-whatsapp-ready>');
   html=addServiceResources(html,p);
   html=updateSchema(html,p,base);
+  html=addFooterContacts(html);
   html=responsiveHtml(html,p,images);
   const image=catalogue.find(x=>x[1]===p.url)?.[2]||'antena-televes-dat.png';
   html=html.replace(/<meta property="og:image" content="[^"]*">/,`<meta property="og:image" content="${base}/assets/${image}">`);
