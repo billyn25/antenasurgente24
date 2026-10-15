@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 // Capa editorial estática: conserva todas las rutas, canonicals y contactos
 // del generador municipal. Se ejecuta antes de la auditoría, nunca en el cliente.
-export const slogan = 'Señal clara. Puertas que responden.';
+export const slogan = 'Profesional de antenas cerca de tu localidad';
 const commitments = [
  ['Contacto directo', 'Tu consulta, con el contacto asignado a tu provincia.'],
  ['Diagnóstico primero', 'Localizar el fallo antes de proponer un cambio de equipo.'],
@@ -58,7 +58,8 @@ export function transform(html, page) {
   .replace('href="/assets/favicon.svg"','href="/assets/favicon.svg?v=azul-confianza-v1"')
   .replace('</head>','<meta name="build-version" content="azul-confianza-v1"></head>');
  if(page.type === 'home') {
-  html = replaceOne(html, '<h1>Tu antenista.<br><span class="highlight">En tu pueblo.</span></h1>', '<h1>Señal clara.<br><span class="highlight">Puertas que<br>responden.</span></h1>', 'eslogan');
+  const heading = '<h1>'+slogan.replace('cerca de tu localidad','<span class="highlight">cerca de tu localidad</span>')+'</h1>';
+  html = replaceOne(html, '<h1>Tu antenista.<br><span class="highlight">En tu pueblo.</span></h1>', heading, 'eslogan');
   html = replaceOne(html, 'Instalar, reparar o renovar. Cuéntanos qué necesitas y encuentra el contacto de tu localidad.', 'Antenista en tu pueblo para instalar, reparar y renovar. Televisión, porteros y videoporteros: tres especialidades, un contacto para tu zona.', 'presentación');
   html = html.replace('La señal vuelve a importar.','Instalación y reparación, de principio a fin.');
   html = replaceOne(html, '<section class="section wrap" id="servicios">', confidence()+'<section class="section wrap" id="servicios">', 'estrellas');

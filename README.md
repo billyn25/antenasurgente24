@@ -11,7 +11,7 @@ El generador municipal conserva 4.035 municipios de 20 provincias y 4.063 págin
 ## Presentación azul / confianza
 
 - Paleta azul, antracita y blanco; WhatsApp conserva su verde. Favicon y botones también azules.
-- Eslogan: «Señal clara. Puertas que responden.»
+- Eslogan: «Profesional de antenas cerca de tu localidad».
 - Retirada la foto inferior `hero-obra.webp` de la publicación. Portada con cuatro fotografías distintas ya presentes en el proyecto.
 - Cinco compromisos de servicio con estrellas decorativas. No son reseñas, nota media ni testimonios; no se publica marcado Review o AggregateRating.
 - Nuevos contenidos de vivienda/comunidad/negocio, síntomas y alcance del presupuesto. Ampliación específica de los tres servicios y de la preparación de visitas municipales.

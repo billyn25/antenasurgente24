@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {slogan} from './presentation.mjs';
 const root='dist',errors=[];
 const check=(ok,msg)=>{if(!ok)errors.push(msg);};
 const report=JSON.parse(fs.readFileSync(path.join(root,'build-report.json'),'utf8'));
@@ -43,7 +44,10 @@ const photos=[...home.matchAll(/<img[^>]+src="([^"]+)"/g)].map(m=>m[1]);
 check(photos.length===4&&new Set(photos).size===4,'Portada: deben ser 4 fotos distintas, sin repetir');
 check(!fs.existsSync(path.join(root,'assets/hero-obra.webp')),'La foto retirada no debe publicarse');
 check(!home.includes('data:image/'),'Fotos de relleno no permitidas');
-check(home.includes('Señal clara.<br><span class="highlight">Puertas que<br>responden.'),'Eslogan nuevo ausente');
+const homeHeading=home.match(/<h1>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+check(homeHeading===slogan,'Eslogan solicitado ausente o alterado');
+check(report.presentation?.slogan===slogan,'El informe no coincide con el eslogan publicado');
+check(home.includes('<p class="lead">Antenas, porteros automáticos<br>y videoporteros.</p>'),'Los tres servicios bajo el eslogan deben conservarse');
 for(const id of ['tipos-instalacion','galeria','presupuesto'])check(home.includes('id="'+id+'"'),'Sección nueva ausente: '+id);
 const css=fs.readFileSync(path.join(root,'assets/styles.css'),'utf8');
 check(!/#ffcf35|#f7f5ee|btn-yellow/i.test(css),'CSS conserva amarillo o crema');
