@@ -2,31 +2,26 @@
 
 Proyecto nuevo: `billyn25/antenasurgente24`. No modifica Antenas Rapid ni Antenista Cerca.
 
-## Compilar y comprobar
+## Enfoque aprobado
 
-Node 22 o superior, sin dependencias npm. `npm run check` ejecuta pruebas, generación de HTML, presentación editorial y auditoría final. Netlify publica `dist` únicamente después de superar este proceso.
+Eslogan literal: **Profesional en antenas cerca de tu localidad**.
 
-El generador municipal conserva 4.035 municipios de 20 provincias y 4.063 páginas HTML. Importa un inventario versionado y comprueba recuentos y slugs. `scripts/presentation.mjs` aplica la composición editorial a HTML estático: no depende de JavaScript del visitante. Si una plantilla cambia y no se reconoce, el build falla en vez de ignorar el cambio.
+Servicios de instalación nueva, reparación y renovación para **viviendas y comunidades de propietarios**. Se destaca en portada, fichas de servicio, provincias y municipios; el formulario permite seleccionar ambos tipos de instalación. Se retira el bloque secundario de negocios.
 
-## Presentación azul / confianza
+Antenas TDT, parabólicas, porteros automáticos y videoporteros conservan su contenido. Se añade un bloque visible de amplificación: instalación nueva, previos, fuentes de alimentación, reparación de amplificadores y sistemas monocanal para comunidades, con fotografía de catálogo Televés. Está presente en portada, el servicio de antenas y cada municipio. Cada ficha municipal incorpora además una fotografía de antena Televés DAT BOSS. Ver `docs/fotografias-amplificacion.md`.
 
-- Paleta azul, antracita y blanco; WhatsApp conserva su verde. Favicon y botones también azules.
-- Eslogan: «Profesional de antenas cerca de tu localidad».
-- Retirada la foto inferior `hero-obra.webp` de la publicación. Portada con cuatro fotografías distintas ya presentes en el proyecto.
-- Cinco compromisos de servicio con estrellas decorativas. No son reseñas, nota media ni testimonios; no se publica marcado Review o AggregateRating.
-- Nuevos contenidos de vivienda/comunidad/negocio, síntomas y alcance del presupuesto. Ampliación específica de los tres servicios y de la preparación de visitas municipales.
-- CSS versionado para evitar que la caché conserve el diseño anterior.
+## Comprobación y publicación
 
-## SEO y contactos
+Node 22 o superior, sin dependencias npm de producción. `npm run check` ejecuta pruebas, generación HTML, composición editorial, enfoque residencial y auditoría. La última fase comprueba las 4.063 páginas, 4.035 municipios y 20 provincias: enlaces, anclas, IDs, títulos, descripciones, teléfonos, WhatsApp, fotos, eslogan, JSON-LD, canonicals y sitemaps.
 
-Inicio → provincia → municipio. HTML con todos los enlaces, directorio alfabético y filtro opcional. Las fichas conservan antenista en pueblo, instalación de antenas, porteros automáticos y videoporteros; teléfono y formulario WhatsApp preseleccionados por provincia.
+La portada tiene cinco fotografías distintas, sin recuperar la foto rechazada `hero-obra.webp`. Se mantiene azul/antracita/blanco, con WhatsApp verde. Las cinco estrellas son compromisos de servicio, no reseñas ni puntuaciones de clientes.
 
-Teléfono Norte: 641 589 394. Madrid, Guadalajara, Toledo y Cuenca: 614 789 945. Canonicals, metadatos, JSON-LD y sitemaps principal/provinciales se mantienen. No se anuncian sedes físicas en todos los municipios ni se garantiza disponibilidad inmediata.
+Los módulos de presentación se ejecutan en el build, no en el navegador. Si no reconocen una plantilla, cancelan la publicación. Las nuevas fotos se validan y se sirven desde `dist/assets`, no mediante peticiones externas del visitante. Se priorizan copias locales de `src/media` cuando existen.
 
-`dist/build-report.json` muestra recuentos, modo de indexación y versión editorial. La auditoría comprueba todas las páginas: H1, títulos, descripciones, enlaces, anclas, IDs, fotos, teléfonos, WhatsApp, JSON-LD, canonicals, sitemaps y municipios huérfanos.
+## Contactos y SEO
 
-## Indexación y datos legales
+Norte: 641 589 394. Madrid, Guadalajara, Toledo y Cuenca: 614 789 945. Se mantienen rutas, tres servicios locales por municipio, sitemaps provinciales y HTML navegable sin JavaScript. El formulario envía también el tipo de inmueble y la consulta de amplificación al teléfono de la provincia.
 
-Se conserva `launchReady: false`. Esta revisión visual no habilita la indexación ni da por completados los datos legales. Para lanzar el dominio definitivo deben confirmarse titular y dominio, completar la información legal y activar la configuración de producción. Los previews siguen en `noindex,follow`.
+`dist/build-report.json` recoge el modo de publicación, recuentos y comprobaciones de imágenes. El nombre de un pueblo no convierte una foto de catálogo en un trabajo local. No se inventan sedes, casos realizados, reseñas ni disponibilidad inmediata.
 
-El contenido técnico común no se presenta como trabajo realizado en cada pueblo. Los datos y fotografías de intervenciones locales solo deben añadirse cuando sean reales y verificables. La cantidad de URLs no garantiza indexación ni posiciones.
+Se conserva `launchReady: false`: esta actualización no cambia dominio, indexación ni datos legales. Antes del lanzamiento deben confirmarse titular/dominio, completarse la información legal y activarse la configuración de producción. Los previews continúan en `noindex,follow`. La cantidad de URLs no garantiza indexación ni posiciones.
