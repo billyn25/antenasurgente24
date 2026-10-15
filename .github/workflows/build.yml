@@ -11,12 +11,25 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: npm run check
+      - name: Instalar navegador de pruebas (solo CI)
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.51.1
+          npx playwright install chromium
+      - name: Comprobar móvil, distritos, buscador y WhatsApp
+        run: npm run test:browser
+      - name: Capturas y métricas del navegador
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: revision-movil-y-madrid
+          path: browser-artifacts/
+          if-no-files-found: ignore
       - name: Resumen del directorio
         run: node -e "const r=JSON.parse(require('fs').readFileSync('dist/build-report.json')); delete r.pages; console.log(JSON.stringify(r,null,2))"

@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {districts} from '../config/madrid-districts.mjs';
+import {homeHero,districtDirectory,sectionById,enhanceDirectory,districtPage} from '../scripts/navigation.mjs';
+assert.equal(districts.length,21);assert.equal(new Set(districts.map(x=>x.slug)).size,21);assert.equal(districts.reduce((n,d)=>n+d.barrios.length,0),131);
+assert.equal(sectionById('<section id="a"><section id="b">B</section>A</section>','a'),'<section id="a"><section id="b">B</section>A</section>');
+assert.throws(()=>sectionById('<section id="a">','a'),/cierre/);
+const hero=homeHero();assert(hero.includes('Profesional en antenas '));assert(hero.includes('cerca de tu localidad'));assert(hero.includes('antena-televes-dat.png'));assert(hero.includes('641 589 394'));assert(hero.includes('614 789 945'));assert.equal((hero.match(/id="telefonos-zonas"/g)||[]).length,1);
+assert.equal((districtDirectory().match(/<li>/g)||[]).length,21);assert.equal((districtDirectory(false,'chamberi').match(/<li>/g)||[]).length,20);
+const report={counts:[{province:'Madrid',towns:179},{province:'Burgos',towns:371}],provinceCount:2,totalTowns:550};
+const directory='<div class="province-grid"><a href="/provincias/madrid/"><strong>Madrid</strong><small>179 municipios</small></a><a href="/provincias/burgos/"><strong>Burgos</strong><small>371 municipios</small></a></div><div class="town-preview">Pocos pueblos</div>';
+const transformed=enhanceDirectory(directory,report);assert(!transformed.includes('Pocos pueblos'));assert.equal((transformed.match(/class="province-prefix"/g)||[]).length,2);assert(transformed.includes('data-location-finder'));assert(transformed.includes('21 distritos'));
+const graph={'@graph':[{'@type':'WebPage',url:'https://example.test/provincias/madrid/madrid/'},{'@type':'Service',serviceType:['antenas']},{'@type':'BreadcrumbList'}]};
+const sample='<html><head><title>Madrid</title><meta name="description" content="Madrid"><meta name="robots" content="noindex,follow"><link rel="canonical" href="https://example.test/provincias/madrid/madrid/"><script type="application/ld+json">'+JSON.stringify(graph)+'</script></head><body><main id="contenido">'+['antenas','amplificacion','porteros','videoporteros','confianza'].map(id=>'<section id="'+id+'"><h2>Servicio en Madrid</h2></section>').join('')+'<section id="contacto"><label>Municipio<input name="municipio" value="Madrid"></label></section></main></body></html>';
+const d=districts.find(x=>x.slug==='chamberi'),built=districtPage(sample,d,'https://example.test');
+assert.equal(built.page.type,'district');assert.equal(built.page.phone,'614 789 945');assert.equal(built.page.noindex,true);assert(built.html.includes('Chamberí, Madrid'));assert(built.html.includes('Gaztambide'));assert(built.html.includes('name="distrito" value="Chamberí" readonly'));assert(built.html.includes('name="municipio" value="Madrid"'));assert(built.html.includes('https://example.test'+d.url));
+console.log('TESTS NAVEGACIÓN OK: 21 distritos, 131 barrios de referencia, secciones equilibradas, provincias, buscador, eslogan, teléfonos y separación municipio/distrito.');
