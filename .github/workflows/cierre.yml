@@ -1,0 +1,34 @@
+name: Auditoría de cierre SEO
+on:
+  push:
+    branches: [qa-cierre-20261015]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cierre-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  cierre:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm run check
+      - run: node scripts/seo-review.mjs --network
+      - name: Copia reproducible de la auditoría
+        run: |
+          node --input-type=module -e "import fs from 'node:fs'; import {source} from './scripts/municipios.mjs'; const r=await fetch(source); if(!r.ok)throw Error(r.status);fs.writeFileSync('config/municipios.audit.json', await r.text())"
+          mkdir -p paquete
+          tar -czf paquete/cierre-source.tgz scripts src config tests docs package.json netlify.toml README.md dist .github seo-review
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cierre-auditado
+          path: |
+            paquete/
+            seo-review/
+          retention-days: 7
