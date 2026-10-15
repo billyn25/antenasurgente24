@@ -3,25 +3,24 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {districts} from '../config/madrid-districts.mjs';
 import {version,sectionById} from './navigation.mjs';
-import {verifyHomeOrder,slogan} from './residential.mjs';
-const root='dist',report=JSON.parse(fs.readFileSync(path.join(root,'build-report.json'),'utf8'));
+import {slogan} from './residential.mjs';
+import {coverage,verifyBalancedHome,verifyFooter,version as footerVersion} from './service-footer.mjs';
+const root='dist',report=JSON.parse(fs.readFileSync(path.join(root,'build-report.json'),'utf8')),info=coverage(report);
 const file=u=>path.join(root,u==='/404.html'?'404.html':u==='/'?'index.html':u.slice(1)+'index.html');
 const read=u=>fs.readFileSync(file(u),'utf8');
 const pages=new Map(report.pages.map(p=>[p.url,p]));
 assert.equal(pages.size,report.pages.length,'Rutas duplicadas');
-assert.equal(report.navigation?.version,version);
-assert.equal(report.pages.filter(p=>p.type==='district').length,21);
-assert.equal(report.totalDistricts,21);
-assert.equal(report.totalPages,report.totalTowns+49);
-assert.equal(report.provinceCount,20);
+assert.equal(report.navigation?.version,version);assert.equal(report.serviceFooter?.version,footerVersion);
+assert.equal(report.pages.filter(p=>p.type==='district').length,21);assert.equal(report.totalDistricts,21);
+assert.equal(report.totalPages,report.totalTowns+49);assert.equal(report.provinceCount,20);
 assert.equal(report.pages.filter(p=>p.type==='town').length,report.totalTowns);
 assert.equal(report.pages.filter(p=>p.type==='town'&&p.province==='madrid').length,179);
+assert.equal(info.services,4);assert.equal(info.regions.length,8);
 const titles=new Set(),descriptions=new Set(),inbound=new Map([...pages.keys()].map(u=>[u,0]));
 const decode=s=>s.replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'").replaceAll('&lt;','<').replaceAll('&gt;','>');
 const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
-const ids=new Map();
-for(const url of pages.keys())ids.set(url,[...read(url).matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
-let stars=0,amplified=0,photoTowns=0,internalLinks=0;
+const ids=new Map();for(const url of pages.keys())ids.set(url,[...read(url).matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
+let stars=0,amplified=0,photoTowns=0,internalLinks=0,footers=0;
 for(const [url,p] of pages){
  const html=read(url);
  assert.equal((html.match(/<h1\b/g)||[]).length,1,url+': H1');
@@ -31,8 +30,10 @@ for(const [url,p] of pages){
  assert(html.includes('<title>'+escape(p.title)+'</title>'),url+': title distinto del informe');
  assert(html.includes('rel="canonical" href="'+report.base+url+'"'),url+': canonical');
  assert(html.includes('name="robots" content="'+(p.noindex?'noindex,follow':'index,follow,max-image-preview:large')+'"'),url+': indexación alterada');
- assert(html.includes('navigation.css?v='+version),url+': estilos nuevos ausentes');
+ assert(html.includes('navigation.css?v='+version),url+': estilos de navegación ausentes');
+ assert(html.includes('service-footer.css?v='+footerVersion),url+': estilos del pie ausentes');
  assert(!/hero-obra\.webp|#ffcf35|aggregateRating|"@type":"Review"/.test(html),url+': regresión visual o reseñas ficticias');
+ verifyFooter(html,info);footers++;
  for(const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)){
   const data=JSON.parse(m[1]);const webPage=data['@graph'].find(n=>n['@type']==='WebPage');assert.equal(webPage.url,report.base+url,url+': URL en datos estructurados');
  }
@@ -53,17 +54,19 @@ for(const [url,p] of pages){
   if(p.type==='town')photoTowns++;
  }
  if(['home','town','district','service'].includes(p.type)){assert.equal((html.match(/class="commitment-star"/g)||[]).length,5,url+': confianza');stars++;}
- if(ids.get(url).includes('amplificacion')){const amp=sectionById(html,'amplificacion');for(const text of ['Previos','fuentes de alimentación','monocanal'])assert(amp.toLowerCase().includes(text.toLowerCase()),url+': amplificación incompleta');amplified++;}
+ if(ids.get(url).includes('amplificacion')){const amp=sectionById(html,'amplificacion');for(const text of ['previos','fuentes de alimentación','monocanal'])assert(amp.toLowerCase().includes(text),url+': amplificación incompleta');amplified++;}
 }
 for(const [url,p] of pages)if(['town','district','province','service'].includes(p.type))assert(inbound.get(url)>0,url+': huérfana');
 const home=read('/');
 assert.equal(decode(home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g,'')).trim(),slogan,'Eslogan literal');
 assert(home.includes('viviendas y comunidades'),'Público objetivo');
-const homePhotos=[...home.matchAll(/<img\b[^>]*src="([^"]+)"/g)].map(m=>m[1]);assert.equal(homePhotos.length,5);assert.equal(new Set(homePhotos).size,5);
+const homePhotos=[...home.split('</main>')[0].matchAll(/<img\b[^>]*src="([^"]+)"/g)].map(m=>m[1]);assert.equal(homePhotos.length,5);assert.equal(new Set(homePhotos).size,5);
 assert(!home.includes('class="town-preview"'),'Selección antigua de pocos pueblos');
-assert.equal((home.match(/class="province-prefix"/g)||[]).length,20,'Provincias sin Antenista en');
-assert(home.includes('data-location-finder'),'Buscador global ausente');
-verifyHomeOrder(home);
+assert.equal((home.match(/class="province-prefix"/g)||[]).length,20,'Provincias sin Antenista en');assert(home.includes('data-location-finder'),'Buscador global ausente');
+verifyBalancedHome(home);
+const svg=fs.readFileSync(path.join(root,'assets/cobertura-espana.svg'),'utf8');
+assert.equal((svg.match(/data-province=/g)||[]).length,20);for(const p of info.provinces)assert(svg.includes('data-province="'+p.id+'"'),'Punto cartográfico ausente '+p.id);
+assert(!/NaN|undefined/.test(svg));assert(svg.includes('Canarias'));assert(svg.includes('Illes Balears'));
 const index=JSON.parse(fs.readFileSync(path.join(root,'assets/location-index.json'),'utf8'));
 assert.equal(index.length,report.totalTowns+21);assert.equal(new Set(index.map(r=>r.url)).size,index.length);
 for(const x of index)assert(pages.has(x.url),'Buscador enlaza una página inexistente');
@@ -78,7 +81,6 @@ for(const name of fs.readdirSync(path.join(root,'sitemaps')))for(const m of fs.r
 assert.equal(new Set(urls).size,urls.length,'Duplicados en sitemaps');
 const expected=report.pages.filter(p=>['home','service','province','town','district'].includes(p.type));assert.equal(urls.length,expected.length);
 const sitemapSet=new Set(urls);for(const p of expected)assert(sitemapSet.has(report.base+p.url),'Falta en sitemap '+p.url);
-assert.equal(amplified,report.totalTowns+23);assert.equal(photoTowns,report.totalTowns);
-const result={version,pages:pages.size,towns:photoTowns,districts:21,sitemapUrls:urls.length,searchLocations:index.length,internalLinks,orphans:0,amplificationPages:amplified,confidenceSections:stars,homeOrder:['servicios','amplificacion','tipos-instalacion'],indexingChanged:false};
-fs.writeFileSync(path.join(root,'navigation-audit.json'),JSON.stringify(result,null,2));
-console.log('AUDITORÍA FINAL OK: '+JSON.stringify(result));
+assert.equal(amplified,report.totalTowns+23);assert.equal(photoTowns,report.totalTowns);assert.equal(footers,report.totalPages);
+const result={version,serviceFooter:footerVersion,pages:pages.size,towns:photoTowns,districts:21,sitemapUrls:urls.length,searchLocations:index.length,internalLinks,orphans:0,amplificationPages:amplified,confidenceSections:stars,footerMaps:footers,services:4,autonomousCommunities:8,provinceMarkers:20,homeOrder:['antenas','porteros','videoporteros','amplificacion'],indexingChanged:false};
+fs.writeFileSync(path.join(root,'navigation-audit.json'),JSON.stringify(result,null,2));console.log('AUDITORÍA FINAL OK: '+JSON.stringify(result));

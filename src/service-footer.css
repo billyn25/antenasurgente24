@@ -1,0 +1,51 @@
+/* Same hierarchy for the four services. Scoped to the home page. */
+.page-home #servicios .cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;align-items:stretch}
+.page-home #servicios .service-card{margin:0;min-width:0;display:flex;flex-direction:column;padding:0;align-self:stretch}
+.page-home #servicios .image-box{display:flex;align-items:center;justify-content:center;flex:0 0 200px;min-height:0;height:200px;border-bottom:1px solid var(--line);background:#fff}
+.page-home #servicios .image-box img{width:100%;height:100%;object-fit:contain;padding:20px}
+.page-home #servicios .card-body{padding:24px;display:flex;flex:1;flex-direction:column}
+.page-home #servicios h3{font-size:1.16rem;line-height:1.22;letter-spacing:-.025em;margin:0 0 18px}
+.page-home #servicios .card-body p{font-size:.87rem;line-height:1.65;margin-bottom:20px}
+.page-home #servicios .card-body .text-link{margin-top:auto;padding-top:14px}
+.page-home #servicios .card-number{margin-bottom:20px}
+.page-home #servicios{padding-bottom:40px}
+/* Shared footer: directory counts, not testimonials. */
+.footer .footer-coverage{display:grid;grid-template-columns:1fr 1fr;gap:28px 64px;align-items:center;padding:12px 0 44px;margin-bottom:44px;border-bottom:1px solid #40536d}
+.footer .coverage-copy .kicker{color:#b5d2ff;margin-bottom:18px}
+.footer .coverage-copy h2{color:#fff;font-size:clamp(1.85rem,3vw,2.7rem);line-height:1.12;margin-bottom:22px;letter-spacing:-.035em}
+.footer .coverage-copy>p{font-size:.88rem;line-height:1.65;max-width:440px;margin:0 0 20px;color:#c2d1e5}
+.footer .coverage-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:28px 0 18px}
+.footer .coverage-stats>div{display:flex;flex-direction:column-reverse;border-top:1px solid #40536d;padding-top:14px;min-width:0}
+.footer .coverage-stats dt{font-size:.76rem;line-height:1.4;color:#c2d1e5}
+.footer .coverage-stats dd{font-size:clamp(2rem,3.2vw,3rem);font-weight:800;letter-spacing:-.04em;line-height:1.15;color:#fff;margin:0 0 5px;font-variant-numeric:tabular-nums}
+.footer .coverage-copy>.coverage-districts{font-size:.75rem;color:#b5d2ff;margin-bottom:22px}
+.footer .coverage-map{min-width:0;width:100%}
+.footer .coverage-map>img{width:100%;height:auto;max-height:420px;object-fit:contain}
+.footer .coverage-map .coverage-legend{font-size:.73rem;line-height:1.5;color:#d5e3f4;text-align:center;max-width:none;margin:8px 0 20px}
+.coverage-legend>span{display:inline-block;width:8px;height:8px;vertical-align:middle;border-radius:50%;background:#a7d1ff;margin-right:7px}
+.footer .coverage-map details{border-top:1px solid #40536d;padding:14px 0 0}
+.footer .coverage-map summary{font-size:.83rem;font-weight:650;color:#fff;cursor:pointer}
+.footer .coverage-map ul{padding:14px 0 0;list-style:none;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 12px}
+.footer .coverage-map li a{display:block;padding:5px 0;font-size:.8rem;color:#d5e3f4}
+.footer .coverage-map li a:hover{text-decoration:underline;text-underline-offset:3px}
+.footer .footer-coverage>.coverage-note{grid-column:1/-1;font-size:.74rem;line-height:1.7;color:#c2d1e5;max-width:none;margin:0}
+@media(max-width:1199px) and (min-width:761px){.page-home #servicios .cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+ .page-home #servicios .cards{grid-template-columns:1fr;gap:16px}
+ .page-home #servicios .service-card{display:grid;grid-template-columns:minmax(105px,32%) minmax(0,1fr)}
+ .page-home #servicios .image-box{height:100%;flex:auto;border-bottom:0;border-right:1px solid var(--line)}
+ .page-home #servicios .image-box img{height:auto;max-height:185px;padding:10px}
+ .page-home #servicios .card-body{padding:20px;min-height:270px}
+ .page-home #servicios .card-number{margin-bottom:14px}
+ .page-home #servicios h3{font-size:1.1rem;margin-bottom:14px}
+ .page-home #servicios .card-body p{font-size:.82rem;line-height:1.6;margin-bottom:12px}
+ .page-home #servicios .text-link{font-size:.78rem}
+ .footer .footer-coverage{grid-template-columns:1fr;gap:22px;margin-bottom:34px;padding-bottom:32px}
+ .footer .coverage-copy h2{font-size:2rem}
+ .footer .coverage-stats{gap:18px 24px}
+ .footer .coverage-stats dd{font-size:2.45rem}
+ .footer .coverage-map>img{max-height:340px}
+ .footer .coverage-map .coverage-legend{text-align:left;margin-top:0}
+ .footer .coverage-map ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:359px){.page-home #servicios .service-card{grid-template-columns:92px minmax(0,1fr)}.page-home #servicios .card-body{padding:16px}.page-home #servicios h3{font-size:1.02rem}}
