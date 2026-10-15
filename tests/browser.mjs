@@ -29,7 +29,8 @@ try{
   await page.screenshot({path:out+'/home-'+width+'.png'});
   await page.locator('#cobertura').scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.querySelector('.coverage-map img')?.naturalWidth>0);
-  assert.deepEqual(await page.locator('.coverage-stats dd').allTextContents(),['4','8','20','4.035']);
+  // ICU versions differ in grouping four-digit Spanish numbers; compare the values.
+  assert.deepEqual((await page.locator('.coverage-stats dd').allTextContents()).map(x=>Number(x.replace(/\D/g,''))),[4,8,20,4035]);
   assert.equal(await page.locator('#cobertura .coverage-map li a').count(),20);
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Desbordamiento en mapa '+width);
   metrics.push({...measure,cards,footerMapLoaded:true,footerProvinces:20});
