@@ -23,6 +23,12 @@ try{
  await page.locator('[data-privacy-open]').click();assert(await page.locator('#privacy-panel').isVisible());
  fs.mkdirSync('browser-artifacts',{recursive:true});await page.screenshot({path:'browser-artifacts/cierre-privacidad-publicada-390.png'});await page.keyboard.press('Escape');
  assert.equal((await context.cookies()).length,0);assert.equal(await page.evaluate(()=>localStorage.length+sessionStorage.length),0);assert(requests.every(u=>new URL(u).origin===origin));assert.equal(errors.length,0);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ await page.goto(origin+'/provincias/burgos/lerma/?closure='+version,{waitUntil:'networkidle'});
+ assert(await page.locator('#direccion-local').innerText().then(t=>t.includes('Ruyales del Agua')));
+ await page.locator('[data-request-service="Instalación de antenas Starlink"]').click();assert.equal(await page.inputValue('[name="servicio"]'),'Instalación de antenas Starlink');
+ await page.locator('#antenas img').scrollIntoViewIfNeeded();await page.locator('#antenas img').evaluate(i=>i.decode());assert(await page.locator('#antenas img').evaluate(i=>i.currentSrc.endsWith('.webp')));
+ await page.locator('#direccion-local').screenshot({path:'browser-artifacts/lerma-publicada-390.png'});
+ result.localContentVerified=true;result.webpVerified=true;
  result.cookies=0;result.storage=0;result.externalRequests=0;result.mobileVerified=true;result.verified=true;
 }finally{await browser.close();}
 fs.writeFileSync('browser-artifacts/cierre-live.json',JSON.stringify(result,null,2));console.log('CIERRE NETLIFY VERIFICADO: '+JSON.stringify(result));

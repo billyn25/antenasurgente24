@@ -21,7 +21,7 @@ if(form){
   const option=province.selectedOptions[0],number=option?.dataset.whatsapp;
   if(!/^34[6789]\d{8}$/.test(number||'')){status.textContent='Selecciona una provincia válida o utiliza el teléfono de contacto.';return;}
   const data=new FormData(form);
-  const message=['Hola, necesito información sobre '+data.get('servicio')+'.',data.get('inmueble')?'Tipo de instalación: '+data.get('inmueble')+'.':'','Municipio: '+String(data.get('municipio')).trim()+'.',data.get('distrito')?'Distrito: '+String(data.get('distrito')).trim()+'.':'','Provincia: '+option.textContent+'.','Consulta: '+String(data.get('averia')).trim(),data.get('telefono')?'Mi teléfono: '+String(data.get('telefono')).trim():''].filter(Boolean).join('\n');
+  const message=['Hola, necesito información sobre '+data.get('servicio')+'.',data.get('inmueble')?'Tipo de instalación: '+data.get('inmueble')+'.':'','Municipio: '+String(data.get('municipio')).trim()+'.',data.get('distrito')?'Distrito: '+String(data.get('distrito')).trim()+'.':'','Provincia: '+option.textContent+'.',data.get('nucleo')?'Barrio o localidad: '+String(data.get('nucleo')).trim()+'.':'','Consulta: '+String(data.get('averia')).trim(),data.get('telefono')?'Mi teléfono: '+String(data.get('telefono')).trim():''].filter(Boolean).join('\n');
   const url='https://wa.me/'+number+'?text='+encodeURIComponent(message);
   const link=document.createElement('a');link.href=url;link.textContent='Abrir de nuevo la consulta en WhatsApp';link.target='_blank';link.rel='noopener noreferrer';
   status.replaceChildren(document.createTextNode('Mensaje preparado. '),link);window.open(url,'_blank','noopener,noreferrer');

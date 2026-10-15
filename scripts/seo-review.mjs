@@ -23,7 +23,7 @@ for(const p of report.pages){
  for(const m of h.matchAll(/<img\b[^>]*>/g))if(!/alt="[^"]+"/.test(m[0]))stats.blankImageAlt.push(p.url);
  for(const m of h.matchAll(/<(?:script|img|iframe)\b[^>]*src="(https?:[^\"]+)"/g))stats.externalAssets.push({url:p.url,asset:m[1]});
  if(p.type==='town'){
-  const b=(h.match(/<section class="service-detail" id="antenas">[\s\S]*?<\/section>/)||[])[0]||'';
+  const b=(h.match(/<section class="service-detail[^"]*" id="antenas">[\s\S]*?<\/section>/)||[])[0]||'';
   const prose=[...b.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)].map(m=>text(m[1])).join(' ');
   const hash=createHash('sha256').update(prose).digest('hex');const v=technical.get(hash)||{count:0,example:p.url,words:prose.split(' ').length};v.count++;technical.set(hash,v);
  }

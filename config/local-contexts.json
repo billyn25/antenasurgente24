@@ -1,0 +1,67 @@
+{
+  "reviewedOn": "2026-10-15",
+  "purpose": "Referencias territoriales para identificar la dirección del aviso. No son pruebas de trabajos, sedes, cobertura de señal ni plazos de desplazamiento.",
+  "locations": {
+    "/provincias/bizkaia/zalla/": {
+      "heading": "El barrio también importa al preparar el aviso",
+      "paragraphs": ["En Zalla, concreta si la vivienda está en Aranguren, La Magdalena o en otra zona del municipio. La referencia municipal de La Magdalena la sitúa entre el centro de Zalla y Aranguren: indicar solo el nombre del municipio puede dejar impreciso el punto de encuentro.", "Para una antena o un equipo Starlink, añade el acceso previsto a la cubierta y dónde debe terminar el cable. Para un portero comunitario, indica la calle y el portal, además de si el fallo lo sufren todos los vecinos o solo una vivienda."],
+      "examples": ["Aranguren", "La Magdalena"],
+      "sources": [{"label":"Ayuntamiento de Zalla · referencia de La Magdalena","url":"https://memoria.es.zalla.eus/12-barrio-la-magdalena"}]
+    },
+    "/provincias/burgos/lerma/": {
+      "heading": "Lerma y sus localidades, sin confundir el destino",
+      "paragraphs": ["El término de Lerma comprende también Castrillo de Solarana, Rabé de los Escuderos, Revilla Cabriada, Ruyales del Agua, Santillán del Agua y Villoviado. En una solicitud desde cualquiera de ellas, mantén Lerma como municipio e indica la localidad concreta.", "Antes de concertar el montaje, explica si la antena está en la propia vivienda o forma parte de una instalación compartida. En una segunda residencia, añade quién puede facilitar el acceso y en qué fechas estarás allí; así se prepara el aviso sin confundirlo con una dirección del casco de Lerma."],
+      "examples": ["Lerma", "Castrillo de Solarana", "Rabé de los Escuderos", "Revilla Cabriada", "Ruyales del Agua", "Santillán del Agua", "Villoviado"],
+      "sources": [{"label":"Diputación de Burgos · localidades de Lerma","url":"https://www.cultura.burgos.es/provincia/municipio/lerma"}]
+    },
+    "/provincias/leon/astorga/": {
+      "heading": "Identifica el pueblo dentro del municipio de Astorga",
+      "paragraphs": ["Castrillo de los Polvazares, Murias de Rechivaldo, Santa Catalina de Somoza y Valdeviejas forman parte del municipio de Astorga. Puedes seleccionar esa referencia al preparar la consulta: no es necesario cambiar de provincia ni buscar una ficha municipal independiente.", "Para una instalación nueva en cualquiera de estos pueblos, ayuda conocer el punto de fijación, la entrada del cable y las habitaciones que necesitan televisión o internet. En un edificio con portero compartido, prepara también el modelo de placa y el número de viviendas que usarán el sistema."],
+      "examples": ["Astorga", "Castrillo de los Polvazares", "Murias de Rechivaldo", "Santa Catalina de Somoza", "Valdeviejas"],
+      "sources": [{"label":"Ayuntamiento de Astorga · pueblos del municipio","url":"https://www.aytoastorga.es/municipio/Estadisticas/"}]
+    },
+    "/provincias/zamora/puebla-de-sanabria/": {
+      "heading": "Puebla de Sanabria, Castellanos, Ungilde o Robledo",
+      "paragraphs": ["El Ayuntamiento de Puebla de Sanabria identifica Castellanos de Sanabria, Ungilde y Robledo como pueblos anejos. Especifica cuál corresponde a tu vivienda, junto con la calle o una referencia de acceso, para preparar el desplazamiento a la dirección correcta.", "No hace falta elegir una antena antes de consultar. Explica si buscas televisión TDT, recepción por parabólica o internet Starlink: son instalaciones diferentes. Para cambiar un portero o videoportero, una fotografía exterior del equipo existente permite empezar por la compatibilidad, sin desmontarlo."],
+      "examples": ["Puebla de Sanabria", "Castellanos de Sanabria", "Ungilde", "Robledo"],
+      "sources": [{"label":"Ayuntamiento de Puebla de Sanabria · pueblos anejos","url":"https://www.pueblasanabria.com/ayuntamiento/pueblos-anejos.html"}]
+    },
+    "/provincias/avila/arenas-de-san-pedro/": {
+      "heading": "Arenas y sus anejos: concreta dónde está la instalación",
+      "paragraphs": ["Hontanares, La Parra y Ramacastañas son los anejos que recoge el Ayuntamiento de Arenas de San Pedro. Si la instalación está en uno de ellos, puedes indicarlo en el campo de localidad del aviso manteniendo Arenas de San Pedro como municipio.", "En una vivienda con varias plantas, especifica cuántas tomas de televisión necesitas o en qué planta irá el router de Starlink. Para una comunidad, reúne la información del equipo común y de las viviendas afectadas. La revisión de señal y cableado se plantea para esa instalación, no solo por el nombre del pueblo."],
+      "examples": ["Arenas de San Pedro", "Hontanares", "La Parra", "Ramacastañas"],
+      "sources": [{"label":"Ayuntamiento de Arenas de San Pedro · anejos","url":"https://arenasdesanpedro.es/concejalias/anejos/"}]
+    },
+    "/provincias/segovia/cuellar/": {
+      "heading": "Distingue Cuéllar de la localidad concreta del aviso",
+      "paragraphs": ["La documentación municipal de Cuéllar distingue barrios y entidades como Torregutiérrez, Escarabajosa de Cuéllar, Arroyo de Cuéllar, Campo de Cuéllar y Chatún. Añade el nombre que corresponda a tu dirección; las opciones del formulario son referencias, no un callejero completo.", "Cuando el aviso sea de una comunidad, identifica también el portal y quién puede abrir la zona de cabecera o la placa exterior. Si necesitas una instalación individual en otra localidad del término, describe dónde está el inmueble y si se trata de un montaje nuevo, una ampliación de tomas o una avería."],
+      "examples": ["Cuéllar", "Torregutiérrez", "Escarabajosa de Cuéllar", "Arroyo de Cuéllar", "Campo de Cuéllar", "Chatún"],
+      "sources": [{"label":"Ayuntamiento de Cuéllar · referencias territoriales","url":"https://www.aytocuellar.es/normativas/ordenanzas/"}]
+    },
+    "/provincias/palencia/aguilar-de-campoo/": {
+      "heading": "Aguilar de Campoo: indica también la localidad",
+      "paragraphs": ["Mave, Matamorisca y Barrio de San Pedro figuran en la Diputación de Palencia como localidades o juntas vecinales del municipio de Aguilar de Campoo. Si el aviso corresponde a una de ellas, indícalo junto con la dirección; también puedes escribir otra localidad del municipio.", "Para una pérdida de canales, señala si ocurre en todos los televisores o únicamente en una toma. Para un montaje nuevo, explica si ya hay antena, mástil y cableado aprovechables. Estos datos permiten preparar una consulta concreta sin suponer que todas las viviendas del término reciben la misma señal."],
+      "examples": ["Aguilar de Campoo", "Mave", "Matamorisca", "Barrio de San Pedro"],
+      "sources": [{"label":"Diputación de Palencia · Mave","url":"https://www.diputaciondepalencia.es/provincia/entidad-local/mave-jv"},{"label":"Matamorisca","url":"https://www.diputaciondepalencia.es/sitio/cultura/cargos-ayuntamientos-matamorisca"},{"label":"Barrio de San Pedro","url":"https://www.diputaciondepalencia.es/sitio/cultura/cargos-ayuntamientos-barrio-san-pedro"}]
+    },
+    "/provincias/soria/almazan/": {
+      "heading": "El barrio o núcleo de Almazán ayuda a identificar el trabajo",
+      "paragraphs": ["El directorio del Ayuntamiento de Almazán recoge, entre otras, referencias a Almántiga, Balluncar, Cobertelada, Covarrubias, Fuentelcarro, Lodares del Monte y Tejerizas. Indica el barrio o núcleo de tu dirección para distinguirlo del casco de Almazán.", "Al renovar una instalación, separa lo que necesitas dentro de la vivienda de los elementos comunes: una toma adicional no plantea el mismo trabajo que cambiar una cabecera monocanal. Para el acceso al edificio, especifica si hay portero de audio o videoportero y si se cambiará un solo equipo o todo el sistema."],
+      "examples": ["Almazán", "Almántiga", "Balluncar", "Cobertelada", "Covarrubias", "Fuentelcarro", "Lodares del Monte", "Tejerizas"],
+      "sources": [{"label":"Ayuntamiento de Almazán · directorio de barrios","url":"https://almazan.es/directorio-almazan/page/6/"}]
+    },
+    "/provincias/salamanca/ciudad-rodrigo/": {
+      "heading": "Ciudad Rodrigo: casco urbano y otras localidades del término",
+      "paragraphs": ["La información municipal identifica referencias como Águeda, Ivanrey y Sanjuanejo, y sitúa Bocacara dentro del término de Ciudad Rodrigo. En la solicitud, acompaña el municipio con el nombre de la localidad para que el aviso no se interprete automáticamente como una dirección del casco urbano.", "Para una casa que se utiliza por temporadas, indica cuándo habrá alguien para recibir al técnico. Si es una comunidad, comunica si el fallo de antena o de acceso afecta a un vecino o a varios y quién puede facilitar la entrada a las zonas comunes. No necesitas desmontar el equipo para preparar estos datos."],
+      "examples": ["Ciudad Rodrigo", "Águeda", "Ivanrey", "Sanjuanejo", "Bocacara"],
+      "sources": [{"label":"Turismo municipal de Ciudad Rodrigo · territorio","url":"https://turismo.ciudadrodrigo.es/socampana-de-ciudad-rodrigo/"},{"label":"Ayuntamiento · localidades","url":"https://www.ciudadrodrigo.es/ayuntamiento/vacunaciones-8-de-mayo-de-2021/"}]
+    },
+    "/provincias/cantabria/reinosa/": {
+      "heading": "¿La dirección está en Reinosa o en Campoo de Enmedio?",
+      "paragraphs": ["Reinosa y Matamorosa son localidades distintas: Matamorosa pertenece a Campoo de Enmedio. Aunque la referencia habitual de un aviso sea «Reinosa», conviene elegir el municipio que corresponde a la vivienda antes de preparar el desplazamiento.", "Si tu dirección es de Matamorosa, abre la ficha de Campoo de Enmedio desde el enlace inferior y mantén ese nombre en la consulta. Para una avería comunitaria, añade el portal y el número de viviendas afectadas. Para Starlink, especifica además el modelo de kit y el lugar donde necesitas la conexión."],
+      "examples": ["Reinosa"],
+      "related": [{"label":"La vivienda está en Matamorosa: ir a Campoo de Enmedio","url":"/provincias/cantabria/campoo-de-enmedio/"}],
+      "sources": [{"label":"Ayuntamiento de Reinosa · Reinosa y Matamorosa","url":"https://www.aytoreinosa.es/la-junta-gobierno-local-aprueba-proyecto-construccion-carril-bici-reinosa-matamorosa/"}]
+    }
+  }
+}
