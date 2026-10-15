@@ -5,7 +5,7 @@
   "primaryPhone": "641 589 394",
   "centralPhone": "614 789 945",
   "centralProvinces": ["madrid", "guadalajara", "toledo", "cuenca"],
-  "launchReady": false,
+  "launchReady": true,
   "services": [{"id":"antenas","title":"Antenas TDT y parabólicas"},{"id":"porteros","title":"Porteros automáticos"},{"id":"videoporteros","title":"Videoporteros"}],
   "antennaBrands": ["Televés","Alcad","Ikusi","Fagor","Rover","FTE Maximal"],
   "doorphoneBrands": ["Fermax","Tegui","Golmar","Comelit","BTicino","Legrand"]

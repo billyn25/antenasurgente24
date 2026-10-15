@@ -1,9 +1,11 @@
 [build]
-command = "npm run check"
+command = "npm run check && node scripts/audit-indexing.mjs"
 publish = "dist"
 
 [build.environment]
 NODE_VERSION = "22"
 
-# Los encabezados de indexación se generan en dist/_headers.
-# No aplicar aquí un noindex global que bloquee el futuro dominio de producción.
+# El dominio definitivo y launchReady se definen en config/site.json.
+# Solo CONTEXT=production con URL igual al dominio genera index,follow.
+# Deploy previews y ramas conservan noindex. La auditoría impide publicar
+# sitemaps, canonicals o cabeceras incoherentes con el contexto del build.

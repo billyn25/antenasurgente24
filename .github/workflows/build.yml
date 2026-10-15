@@ -18,16 +18,23 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts
-      - run: npm run check
+      - name: Comprobar que los previews siguen fuera de Google
+        run: npm run check && node scripts/audit-indexing.mjs
+      - name: Generar y auditar la publicación en el dominio definitivo
+        run: npm run check && node scripts/audit-indexing.mjs --production
+        env:
+          CONTEXT: production
+          URL: https://antenistaurgente24horas.com
+          DEPLOY_PRIME_URL: https://main--antenistaurgente24horas.netlify.app
       - name: Instalar navegador de pruebas (solo CI)
         run: |
           npm install --no-save --package-lock=false --ignore-scripts playwright@1.56.1
           npx playwright install chromium
       - name: Comprobar móvil, distritos, buscador y WhatsApp
         run: npm run test:browser
-      - name: Comprobar versión pública de Netlify
+      - name: Verificar .com, 21 sitemaps e indexación en Netlify
         if: github.ref == 'refs/heads/main'
-        run: node tests/live.mjs && node tests/closure-live.mjs
+        run: node tests/publication-live.mjs
       - name: Capturas y métricas del navegador
         if: always()
         uses: actions/upload-artifact@v4
