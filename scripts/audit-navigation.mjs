@@ -6,7 +6,8 @@ import {version,sectionById} from './navigation.mjs';
 import {verifyHomeOrder,slogan} from './residential.mjs';
 const root='dist',report=JSON.parse(fs.readFileSync(path.join(root,'build-report.json'),'utf8'));
 const file=u=>path.join(root,u==='/404.html'?'404.html':u==='/'?'index.html':u.slice(1)+'index.html');
-const pages=new Map(report.pages.map(p=>[p.url,{...p,html:fs.readFileSync(file(p.url),'utf8')}])));
+const read=u=>fs.readFileSync(file(u),'utf8');
+const pages=new Map(report.pages.map(p=>[p.url,p]));
 assert.equal(pages.size,report.pages.length,'Rutas duplicadas');
 assert.equal(report.navigation?.version,version);
 assert.equal(report.pages.filter(p=>p.type==='district').length,21);
@@ -17,15 +18,17 @@ assert.equal(report.pages.filter(p=>p.type==='town').length,report.totalTowns);
 assert.equal(report.pages.filter(p=>p.type==='town'&&p.province==='madrid').length,179);
 const titles=new Set(),descriptions=new Set(),inbound=new Map([...pages.keys()].map(u=>[u,0]));
 const decode=s=>s.replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'").replaceAll('&lt;','<').replaceAll('&gt;','>');
-const ids=new Map([...pages].map(([u,p])=>[u,[...p.html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1])]));
+const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+const ids=new Map();
+for(const url of pages.keys())ids.set(url,[...read(url).matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
 let stars=0,amplified=0,photoTowns=0,internalLinks=0;
 for(const [url,p] of pages){
- const html=p.html;
+ const html=read(url);
  assert.equal((html.match(/<h1\b/g)||[]).length,1,url+': H1');
  assert.equal(new Set(ids.get(url)).size,ids.get(url).length,url+': IDs repetidos');
  assert(!titles.has(p.title),url+': title duplicado');titles.add(p.title);
  assert(!descriptions.has(p.description),url+': descripción duplicada');descriptions.add(p.description);
- assert(html.includes('<title>'+p.title.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')+'</title>'),url+': title distinto del informe');
+ assert(html.includes('<title>'+escape(p.title)+'</title>'),url+': title distinto del informe');
  assert(html.includes('rel="canonical" href="'+report.base+url+'"'),url+': canonical');
  assert(html.includes('name="robots" content="'+(p.noindex?'noindex,follow':'index,follow,max-image-preview:large')+'"'),url+': indexación alterada');
  assert(html.includes('navigation.css?v='+version),url+': estilos nuevos ausentes');
@@ -53,7 +56,7 @@ for(const [url,p] of pages){
  if(ids.get(url).includes('amplificacion')){const amp=sectionById(html,'amplificacion');for(const text of ['Previos','fuentes de alimentación','monocanal'])assert(amp.toLowerCase().includes(text.toLowerCase()),url+': amplificación incompleta');amplified++;}
 }
 for(const [url,p] of pages)if(['town','district','province','service'].includes(p.type))assert(inbound.get(url)>0,url+': huérfana');
-const home=pages.get('/').html;
+const home=read('/');
 assert.equal(decode(home.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g,'')).trim(),slogan,'Eslogan literal');
 assert(home.includes('viviendas y comunidades'),'Público objetivo');
 const homePhotos=[...home.matchAll(/<img\b[^>]*src="([^"]+)"/g)].map(m=>m[1]);assert.equal(homePhotos.length,5);assert.equal(new Set(homePhotos).size,5);
@@ -65,9 +68,9 @@ const index=JSON.parse(fs.readFileSync(path.join(root,'assets/location-index.jso
 assert.equal(index.length,report.totalTowns+21);assert.equal(new Set(index.map(r=>r.url)).size,index.length);
 for(const x of index)assert(pages.has(x.url),'Buscador enlaza una página inexistente');
 for(const d of districts){
- for(const u of ['/', '/provincias/madrid/','/provincias/madrid/madrid/'])assert(pages.get(u).html.includes('href="'+d.url+'"'),u+': distrito no enlazado '+d.name);
- const html=pages.get(d.url).html;assert(html.includes('value="'+d.name+'" readonly'),'Distrito en WhatsApp '+d.name);
- for(const barrio of d.barrios)assert(html.includes(barrio.replaceAll('&','&amp;')),'Barrio ausente '+barrio);
+ for(const u of ['/', '/provincias/madrid/','/provincias/madrid/madrid/'])assert(read(u).includes('href="'+d.url+'"'),u+': distrito no enlazado '+d.name);
+ const html=read(d.url);assert(html.includes('value="'+d.name+'" readonly'),'Distrito en WhatsApp '+d.name);
+ for(const barrio of d.barrios)assert(html.includes(escape(barrio)),'Barrio ausente '+barrio);
  assert(html.includes('value="Madrid"'),'Madrid debe seguir siendo el municipio');
 }
 const urls=[];
