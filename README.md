@@ -1,27 +1,32 @@
 # Antenista Urgente 24 Horas
 
-Proyecto nuevo: billyn25/antenasurgente24. Este cambio no modifica Antenas Rapid ni Antenista Cerca.
+Proyecto nuevo: `billyn25/antenasurgente24`. No modifica Antenas Rapid ni Antenista Cerca.
 
-## Compilar
+## Compilar y comprobar
 
-Node 22 o superior. Sin dependencias npm de producción. Ejecutar `npm run check`; Netlify publica `dist` solo después de compilar y auditar.
+Node 22 o superior, sin dependencias npm. `npm run check` ejecuta pruebas, generación de HTML, presentación editorial y auditoría final. Netlify publica `dist` únicamente después de superar este proceso.
 
-El directorio importa un censo municipal versionado (ver `scripts/municipios.mjs`). Se comprueban los recuentos de las 20 provincias y se cancela el build ante fallos de descarga, municipios ausentes o slugs duplicados; nunca se publica una selección parcial como si fuera completa.
+El generador municipal conserva 4.035 municipios de 20 provincias y 4.063 páginas HTML. Importa un inventario versionado y comprueba recuentos y slugs. `scripts/presentation.mjs` aplica la composición editorial a HTML estático: no depende de JavaScript del visitante. Si una plantilla cambia y no se reconoce, el build falla en vez de ignorar el cambio.
 
-## Arquitectura
+## Presentación azul / confianza
 
-- Inicio → provincia → municipio; páginas HTML sin dependencia de JavaScript para navegar.
-- Cada municipio reúne antenas, porteros automáticos y videoporteros, con contenido de instalación/reparación y contacto provincial.
-- 3 páginas de servicio, directorios alfabéticos con filtro, formulario WhatsApp con provincia preseleccionada y teléfonos independientes para Centro y Norte.
-- Sitemaps por provincia y principal, canonical, metadatos sociales, Organization, WebSite, WebPage, Service y BreadcrumbList; sin sedes ni valoraciones ficticias.
-- Cinco fotografías originales ya presentes en `src/media`, distintas en la portada. No se sustituyen las fotografías por imágenes de prueba.
+- Paleta azul, antracita y blanco; WhatsApp conserva su verde. Favicon y botones también azules.
+- Eslogan: «Señal clara. Puertas que responden.»
+- Retirada la foto inferior `hero-obra.webp` de la publicación. Portada con cuatro fotografías distintas ya presentes en el proyecto.
+- Cinco compromisos de servicio con estrellas decorativas. No son reseñas, nota media ni testimonios; no se publica marcado Review o AggregateRating.
+- Nuevos contenidos de vivienda/comunidad/negocio, síntomas y alcance del presupuesto. Ampliación específica de los tres servicios y de la preparación de visitas municipales.
+- CSS versionado para evitar que la caché conserve el diseño anterior.
 
-## Publicación e indexación
+## SEO y contactos
 
-El estado original `launchReady: false` se conserva. GitHub y Netlify pueden publicar la previsualización, pero sigue con `noindex,follow`. No confundir publicar archivos con aparecer en Google.
+Inicio → provincia → municipio. HTML con todos los enlaces, directorio alfabético y filtro opcional. Las fichas conservan antenista en pueblo, instalación de antenas, porteros automáticos y videoporteros; teléfono y formulario WhatsApp preseleccionados por provincia.
 
-Para lanzar el dominio definitivo: confirmar dominio y datos completos del titular, completar los textos legales, establecer `launchReady: true` en `config/site.json` y verificar que `URL` de Netlify coincide exactamente con el dominio y `CONTEXT=production`. Los previews continúan en noindex. No usar la opción `LOCAL_FIXTURE` en Netlify ni GitHub Actions.
+Teléfono Norte: 641 589 394. Madrid, Guadalajara, Toledo y Cuenca: 614 789 945. Canonicals, metadatos, JSON-LD y sitemaps principal/provinciales se mantienen. No se anuncian sedes físicas en todos los municipios ni se garantiza disponibilidad inmediata.
 
-Las fichas municipales son un directorio de consulta, no una afirmación de disponibilidad inmediata en todos los pueblos. La indexación y la posición no están garantizadas. Los textos técnicos compartidos deben complementarse con datos de servicio y trabajos locales reales cuando el titular los facilite; no se simula contenido exclusivo mediante cambios aleatorios.
+`dist/build-report.json` muestra recuentos, modo de indexación y versión editorial. La auditoría comprueba todas las páginas: H1, títulos, descripciones, enlaces, anclas, IDs, fotos, teléfonos, WhatsApp, JSON-LD, canonicals, sitemaps y municipios huérfanos.
 
-`dist/build-report.json` identifica recuentos y modo real de compilación. `npm run audit` comprueba H1, títulos, descripciones, enlaces, fotografías referenciadas, teléfonos, selección de WhatsApp, JSON-LD, canonicals, sitemaps y municipios huérfanos.
+## Indexación y datos legales
+
+Se conserva `launchReady: false`. Esta revisión visual no habilita la indexación ni da por completados los datos legales. Para lanzar el dominio definitivo deben confirmarse titular y dominio, completar la información legal y activar la configuración de producción. Los previews siguen en `noindex,follow`.
+
+El contenido técnico común no se presenta como trabajo realizado en cada pueblo. Los datos y fotografías de intervenciones locales solo deben añadirse cuando sean reales y verificables. La cantidad de URLs no garantiza indexación ni posiciones.
