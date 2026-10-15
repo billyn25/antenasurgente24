@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 
-export const version='servicios-equilibrados-mapa-v1';
+export const version='servicios-primero-estrellas-v2';
 export const serviceCount=4;
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -43,6 +43,12 @@ export function balanceHome(html){
  html=html.replace(large,'').replace(services,correct);
  html=html.replace('<span class="kicker">Tres especialidades</span>','<span class="kicker">Cuatro servicios para viviendas y comunidades</span>');
  html=html.replace('Antenas, porteros y videoporteros con el mismo protagonismo. Desde una avería hasta la renovación del equipo.','Antenas, porteros, videoporteros y amplificación. Instalación y reparación para tu vivienda o comunidad.');
+ // Move the complete existing section, rather than hiding it or duplicating it.
+ // Final order: hero, four services, residential section, confidence/stars.
+ const confidence=sectionById(html,'confianza');
+ html=html.replace(confidence,'');
+ const properties=sectionById(html,'tipos-instalacion');
+ html=html.replace(properties,properties+confidence);
  verifyBalancedHome(html);return html;
 }
 export function verifyBalancedHome(html){
@@ -54,7 +60,10 @@ export function verifyBalancedHome(html){
  assert(!html.includes('amplification-home"'),'El bloque grande no debe seguir en portada');
  assert(sectionById(block,'amplificacion').includes('<h3'),'Amplificación debe tener la misma jerarquía que los demás');
  assert(sectionById(block,'amplificacion').includes('href="/servicios/antenas/#amplificacion"'),'Falta el detalle técnico');
- assert(/<section\b[^>]*\bid="tipos-instalacion"/.test(html.slice(html.indexOf(block)+block.length)),'El contenido residencial debe conservarse');
+ const properties=sectionById(html,'tipos-instalacion'),confidence=sectionById(html,'confianza');
+ assert.equal((html.match(/\bid="confianza"/g)||[]).length,1,'La sección de estrellas debe existir una sola vez');
+ assert(html.indexOf(properties)>html.indexOf(block),'Los servicios deben preceder al bloque residencial');
+ assert(html.includes(properties+confidence),'Las estrellas deben ir inmediatamente después de viviendas y comunidades');
 }
 export function mapSvg(geometry,info){
  const project=([lon,lat])=>[30+(lon+9.5)*40,24+(44-lat)*51.5];
@@ -92,8 +101,8 @@ export function apply(root='dist'){
  fs.copyFileSync('src/service-footer.css',path.join(root,'assets/service-footer.css'));
  for(const p of report.pages){const file=path.join(root,p.url==='/404.html'?'404.html':p.url==='/'?'index.html':p.url.slice(1)+'index.html');fs.writeFileSync(file,transform(fs.readFileSync(file,'utf8'),p,info));}
  report.serviceFooter={version,services:info.services,regions:info.regions,provinces:info.provinces.length,municipalities:info.towns,serviceOrder:['antenas','porteros','videoporteros','amplificacion'],markers:info.provinces.map(p=>p.id)};
- report.focus.homeSectionOrder=['servicios (cuatro tarjetas)','tipos-instalacion'];
+ report.focus.homeSectionOrder=['servicios (cuatro tarjetas)','tipos-instalacion','confianza'];
  fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
- console.log(`SERVICIOS Y PIE OK: cuatro tarjetas equivalentes; mapa en ${report.totalPages} páginas; ${info.services} servicios, ${info.regions.length} comunidades autónomas, ${info.provinces.length} provincias y ${info.towns} municipios. Sin cifras de trabajos o clientes inventadas.`);
+ console.log(`SERVICIOS Y PIE OK: servicios primero, estrellas después de viviendas y comunidades; mapa en ${report.totalPages} páginas; ${info.services} servicios, ${info.regions.length} comunidades autónomas, ${info.provinces.length} provincias y ${info.towns} municipios. Sin cifras de trabajos o clientes inventadas.`);
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))apply();

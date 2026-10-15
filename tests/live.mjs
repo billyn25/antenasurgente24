@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {chromium} from 'playwright';
 import site from '../config/site.json' with {type:'json'};
-import {version} from '../scripts/service-footer.mjs';
+import {version,verifyBalancedHome} from '../scripts/service-footer.mjs';
 const origin=site.previewDomain,result={origin,expectedVersion:version,verified:false};
 // A previous Netlify revision must never be reported as publication of this one.
 for(let attempt=0;attempt<8;attempt++){
@@ -11,11 +11,12 @@ for(let attempt=0;attempt<8;attempt++){
   if(report.serviceFooter?.version!==version||report.totalDistricts!==21)throw Error('Netlify todavía sirve otra revisión');
   const home=await fetch(origin+'/?revision='+version,{signal:AbortSignal.timeout(10000)}).then(r=>r.text());
   if(!home.includes('service-footer-version" content="'+version)||!home.includes('id="cobertura"'))throw Error('La portada y el informe no coinciden');
+  verifyBalancedHome(home);
   const map=await fetch(origin+'/assets/cobertura-espana.svg?revision='+version,{signal:AbortSignal.timeout(10000)});
   if(!map.ok||(await map.text()).match(/data-province=/g)?.length!==20)throw Error('Mapa no publicado o incompleto');
   const district=await fetch(origin+'/provincias/madrid/madrid/chamberi/',{signal:AbortSignal.timeout(10000)});
   if(!district.ok||!(await district.text()).includes('Chamberí, Madrid'))throw Error('La ficha de distrito no está publicada');
-  result.verified=true;result.pages=report.totalPages;result.districts=report.totalDistricts;result.services=report.serviceFooter.services;result.regions=report.serviceFooter.regions.length;result.provinces=report.serviceFooter.provinces;break;
+  result.verified=true;result.pages=report.totalPages;result.districts=report.totalDistricts;result.services=report.serviceFooter.services;result.regions=report.serviceFooter.regions.length;result.provinces=report.serviceFooter.provinces;result.homeOrder=report.focus.homeSectionOrder;break;
  }catch(error){result.lastObservation=String(error.message);console.log('NETLIFY: '+result.lastObservation);if(attempt<7)await new Promise(r=>setTimeout(r,5000));}
 }
 fs.mkdirSync('browser-artifacts',{recursive:true});
@@ -24,11 +25,13 @@ if(result.verified){
  try{
   const page=await browser.newPage({viewport:{width:390,height:844}});
   await page.goto(origin+'/?revision='+version,{waitUntil:'networkidle',timeout:30000});
-  result.mobile=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,photoLoaded:document.querySelector('.intro-visual img')?.naturalWidth||0,phonesBottom:document.querySelector('.intro-phone-grid')?.getBoundingClientRect().bottom||null,cards:document.querySelectorAll('#servicios .service-card').length}));
+  result.mobile=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,photoLoaded:document.querySelector('.intro-visual img')?.naturalWidth||0,phonesBottom:document.querySelector('.intro-phone-grid')?.getBoundingClientRect().bottom||null,cards:document.querySelectorAll('#servicios .service-card').length,servicesAfterHero:document.querySelector('.intro-home')?.nextElementSibling?.id==='servicios',starsAfterProperties:document.querySelector('#tipos-instalacion')?.nextElementSibling?.id==='confianza'}));
   await page.screenshot({path:'browser-artifacts/netlify-live-390.png'});
+  await page.locator('#servicios').screenshot({path:'browser-artifacts/netlify-servicios-390.png'});
+  await page.locator('#confianza').screenshot({path:'browser-artifacts/netlify-estrellas-390.png'});
   await page.locator('#cobertura').scrollIntoViewIfNeeded();await page.waitForFunction(()=>document.querySelector('.coverage-map img')?.naturalWidth>0);
   await page.locator('#cobertura').screenshot({path:'browser-artifacts/netlify-cobertura-390.png'});
-  result.mobileVerified=result.mobile.scrollWidth<=390&&result.mobile.photoLoaded>0&&result.mobile.phonesBottom<790&&result.mobile.cards===4;
+  result.mobileVerified=result.mobile.scrollWidth<=390&&result.mobile.photoLoaded>0&&result.mobile.phonesBottom<790&&result.mobile.cards===4&&result.mobile.servicesAfterHero&&result.mobile.starsAfterProperties;
   result.footerVerified=(await page.locator('.coverage-map img').evaluate(i=>i.naturalWidth))>0;
  }catch(error){result.mobileVerified=false;result.mobileError=String(error.message);}finally{await browser.close();}
 }
