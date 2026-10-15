@@ -49,3 +49,9 @@
  .footer .coverage-map ul{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:359px){.page-home #servicios .service-card{grid-template-columns:92px minmax(0,1fr)}.page-home #servicios .card-body{padding:16px}.page-home #servicios h3{font-size:1.02rem}}
+/* Equal emphasis for both contact zones, with readable light text on blue. */
+.intro-home .intro-phone-grid a{background:#1748b6;border-color:#1748b6;color:#fff;box-shadow:0 5px 16px #1748b622;transition:background-color .15s,border-color .15s}
+.intro-home .intro-phone-grid small{color:#eef4ff;font-weight:600;line-height:1.35;text-wrap:balance}
+.intro-home .intro-phone-grid strong{color:#fff;font-variant-numeric:tabular-nums}
+.intro-home .intro-phone-grid a:hover{background:#123989;border-color:#123989}
+.intro-home .intro-phone-grid a:focus-visible{outline:3px solid #14243b;outline-offset:3px}

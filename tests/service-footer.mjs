@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import {coverage,mapSvg,transform,verifyBalancedHome,verifyFooter,version,sectionById} from '../scripts/service-footer.mjs';
+import {coverage,mapSvg,transform,verifyBalancedHome,verifyFooter,version,sectionById,cleanDirectoryAndContacts} from '../scripts/service-footer.mjs';
 const counts=[['Álava',51],['Asturias',78],['Ávila',248],['Bizkaia',113],['Burgos',371],['Cantabria',102],['Cuenca',238],['Gipuzkoa',88],['Guadalajara',288],['La Rioja',174],['León',211],['Madrid',179],['Navarra',272],['Palencia',191],['Salamanca',362],['Segovia',209],['Soria',183],['Toledo',204],['Valladolid',225],['Zamora',248]].map(([province,towns])=>({province,towns}));
 const report={counts,provinceCount:20,totalTowns:4035,totalDistricts:21};const info=coverage(report);
 assert.equal(info.regions.length,8);assert.equal(info.services,4);assert.equal(info.provinces.length,20);assert.throws(()=>coverage({...report,totalTowns:4000}));
@@ -24,4 +24,18 @@ const changed=transform(town,{type:'town'},info);assert(changed.includes(townBod
 const geom=JSON.parse(fs.readFileSync('config/spain-outline.json','utf8'));const svg=mapSvg(geom,info);
 assert.equal((svg.match(/data-province=/g)||[]).length,20);assert(svg.includes('Canarias'));assert(svg.includes('Illes Balears'));assert(!svg.includes('NaN'));
 for(const p of info.provinces)assert(svg.includes('data-province="'+p.id+'"'));
-console.log('TESTS OK: servicios inmediatamente después de portada; estrellas movidas completas debajo de viviendas/comunidades; cuatro tarjetas, mapa, SEO y contactos conservados. '+version);
+const note2='<p class="directory-note">Cada provincia abre su listado completo por orden alfabético. Madrid capital tiene, además, su propio directorio de distritos.</p>';
+const phone='<a href="tel:+34641589394"><small>Norte y otras provincias</small><strong>641 589 394</strong></a>';
+const links='<a href="/provincias/madrid/">Antenista en Madrid</a><a href="/provincias/madrid/madrid/chamberi/">Chamberí</a>';
+for(const count of ['4035','4.035','4,035']){
+ const note1='<p class="availability">Directorio de '+count+' municipios. La inclusión en el directorio no confirma disponibilidad: consulta la atención para tu dirección antes de concertar una visita.</p>';
+ const cleaned=cleanDirectoryAndContacts(note1+links+note2+phone);
+ assert.equal(cleaned,links+phone.replace('Norte y otras provincias','Norte y Castilla y León'));
+ assert.equal(cleanDirectoryAndContacts(cleaned),cleaned,'La limpieza debe ser idempotente');
+ const full=transform(shell(townBody+note1+links+note2+phone),{type:'town'},info);
+ assert(!full.includes('La inclusión en el directorio'));assert(!full.includes('Cada provincia abre su listado'));assert(full.includes(links));assert(full.includes('Norte y Castilla y León'));
+}
+const css=fs.readFileSync('src/service-footer.css','utf8');
+assert(css.includes('.intro-home .intro-phone-grid a{background:#1748b6'));
+assert(css.includes('.intro-home .intro-phone-grid strong{color:#fff'));
+console.log('TESTS OK: dos párrafos retirados, Norte y Castilla y León, teléfonos resaltados; servicios, estrellas, mapa, rutas, SEO y contactos conservados. '+version);

@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 
-export const version='servicios-primero-estrellas-v2';
+export const version='contactos-azul-textos-v3';
 export const serviceCount=4;
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -87,7 +87,18 @@ export function verifyFooter(html,info){
  for(const p of info.provinces)assert(block.includes('href="/provincias/'+p.id+'/"'),'Provincia ausente del mapa '+p.id);
  assert(!/clientes satisfechos|trabajos realizados|comunidades atendidas/i.test(block),'No inventar cifras de clientes');
 }
+// Only the two requested directory paragraphs are removed. Keep links, counts,
+// legal pages, phone routing and technical service information unchanged.
+export function cleanDirectoryAndContacts(html){
+ html=html.replace(/<p class="availability">Directorio de [\d.,\s]+ municipios\. La inclusión en el directorio no confirma disponibilidad: consulta la atención para tu dirección antes de concertar una visita\.<\/p>/g,'');
+ html=html.replaceAll('<p class="directory-note">Cada provincia abre su listado completo por orden alfabético. Madrid capital tiene, además, su propio directorio de distritos.</p>','');
+ html=html.replaceAll('Norte y otras provincias','Norte y Castilla y León');
+ assert(!html.includes('La inclusión en el directorio no confirma disponibilidad'),'No se retiró el aviso del directorio');
+ assert(!html.includes('Cada provincia abre su listado completo por orden alfabético.'),'No se retiró la explicación del directorio');
+ return html;
+}
 export function transform(html,page,info){
+ html=cleanDirectoryAndContacts(html);
  if(page.type==='home')html=balanceHome(html);
  assert.equal(html.split('<footer class="footer">').length,2,'Pie no reconocido');
  html=html.replace('<footer class="footer">','<footer class="footer">'+footerCoverage(info));
@@ -104,5 +115,6 @@ export function apply(root='dist'){
  report.focus.homeSectionOrder=['servicios (cuatro tarjetas)','tipos-instalacion','confianza'];
  fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
  console.log(`SERVICIOS Y PIE OK: servicios primero, estrellas después de viviendas y comunidades; mapa en ${report.totalPages} páginas; ${info.services} servicios, ${info.regions.length} comunidades autónomas, ${info.provinces.length} provincias y ${info.towns} municipios. Sin cifras de trabajos o clientes inventadas.`);
+ console.log('CONTACTOS OK: Norte y Castilla y León; dos párrafos redundantes retirados; teléfonos y enlaces conservados.');
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))apply();

@@ -11,12 +11,14 @@ for(let attempt=0;attempt<8;attempt++){
   if(report.serviceFooter?.version!==version||report.totalDistricts!==21)throw Error('Netlify todavía sirve otra revisión');
   const home=await fetch(origin+'/?revision='+version,{signal:AbortSignal.timeout(10000)}).then(r=>r.text());
   if(!home.includes('service-footer-version" content="'+version)||!home.includes('id="cobertura"'))throw Error('La portada y el informe no coinciden');
+  if(home.includes('La inclusión en el directorio no confirma disponibilidad')||home.includes('Cada provincia abre su listado completo por orden alfabético.')||home.includes('Norte y otras provincias'))throw Error('Netlify conserva un texto retirado');
+  if(!home.includes('Norte y Castilla y León'))throw Error('Falta el nuevo rótulo del teléfono');
   verifyBalancedHome(home);
   const map=await fetch(origin+'/assets/cobertura-espana.svg?revision='+version,{signal:AbortSignal.timeout(10000)});
   if(!map.ok||(await map.text()).match(/data-province=/g)?.length!==20)throw Error('Mapa no publicado o incompleto');
   const district=await fetch(origin+'/provincias/madrid/madrid/chamberi/',{signal:AbortSignal.timeout(10000)});
   if(!district.ok||!(await district.text()).includes('Chamberí, Madrid'))throw Error('La ficha de distrito no está publicada');
-  result.verified=true;result.pages=report.totalPages;result.districts=report.totalDistricts;result.services=report.serviceFooter.services;result.regions=report.serviceFooter.regions.length;result.provinces=report.serviceFooter.provinces;result.homeOrder=report.focus.homeSectionOrder;break;
+  result.verified=true;result.copyVerified=true;result.pages=report.totalPages;result.districts=report.totalDistricts;result.services=report.serviceFooter.services;result.regions=report.serviceFooter.regions.length;result.provinces=report.serviceFooter.provinces;result.homeOrder=report.focus.homeSectionOrder;break;
  }catch(error){result.lastObservation=String(error.message);console.log('NETLIFY: '+result.lastObservation);if(attempt<7)await new Promise(r=>setTimeout(r,5000));}
 }
 fs.mkdirSync('browser-artifacts',{recursive:true});
@@ -26,7 +28,10 @@ if(result.verified){
   const page=await browser.newPage({viewport:{width:390,height:844}});
   await page.goto(origin+'/?revision='+version,{waitUntil:'networkidle',timeout:30000});
   result.mobile=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,photoLoaded:document.querySelector('.intro-visual img')?.naturalWidth||0,phonesBottom:document.querySelector('.intro-phone-grid')?.getBoundingClientRect().bottom||null,cards:document.querySelectorAll('#servicios .service-card').length,servicesAfterHero:document.querySelector('.intro-home')?.nextElementSibling?.id==='servicios',starsAfterProperties:document.querySelector('#tipos-instalacion')?.nextElementSibling?.id==='confianza'}));
+  result.contacts=await page.locator('.intro-phone-grid a').evaluateAll(links=>links.map(a=>({label:a.querySelector('small').textContent,href:a.getAttribute('href'),background:getComputedStyle(a).backgroundColor,numberColor:getComputedStyle(a.querySelector('strong')).color})));
+  result.contactsVerified=result.contacts.length===2&&result.contacts.every(c=>c.background==='rgb(23, 72, 182)'&&c.numberColor==='rgb(255, 255, 255)')&&result.contacts[0].label==='Norte y Castilla y León'&&result.contacts[0].href==='tel:+34641589394'&&result.contacts[1].href==='tel:+34614789945';
   await page.screenshot({path:'browser-artifacts/netlify-live-390.png'});
+  await page.locator('.intro-phone-grid').screenshot({path:'browser-artifacts/netlify-telefonos-390.png'});
   await page.locator('#servicios').screenshot({path:'browser-artifacts/netlify-servicios-390.png'});
   await page.locator('#confianza').screenshot({path:'browser-artifacts/netlify-estrellas-390.png'});
   await page.locator('#cobertura').scrollIntoViewIfNeeded();await page.waitForFunction(()=>document.querySelector('.coverage-map img')?.naturalWidth>0);
