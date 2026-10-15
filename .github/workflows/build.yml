@@ -20,10 +20,13 @@ jobs:
       - run: npm run check
       - name: Instalar navegador de pruebas (solo CI)
         run: |
-          npm install --no-save --package-lock=false --ignore-scripts playwright@1.51.1
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.56.1
           npx playwright install chromium
       - name: Comprobar móvil, distritos, buscador y WhatsApp
         run: npm run test:browser
+      - name: Comprobar versión pública de Netlify
+        if: github.ref == 'refs/heads/main'
+        run: node tests/live.mjs
       - name: Capturas y métricas del navegador
         if: always()
         uses: actions/upload-artifact@v4
