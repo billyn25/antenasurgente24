@@ -1,0 +1,34 @@
+/* Zona Norte tiene prioridad; los dos números mantienen su ruta original. */
+.page-home .intro-phone-grid{grid-template-columns:1.25fr 1fr;align-items:stretch}
+.page-home .intro-phone-grid>a.contact-north{background:#1748b6;border:2px solid #87b7ff;box-shadow:0 7px 20px #1748b62b;padding:15px 16px;gap:9px}
+.page-home .intro-phone-grid>a.contact-north .north-label{color:#fff;font-size:.93rem;font-weight:850;letter-spacing:.035em;line-height:1.28;display:block}
+.page-home .intro-phone-grid>a.contact-north .north-label span{display:block;font-size:.86rem;letter-spacing:0;margin-top:3px;color:#fff}
+.page-home .intro-phone-grid>a.contact-north strong{font-size:1.95rem;font-weight:850;line-height:1.15;color:#fff}
+.page-home .intro-phone-grid>a:not(.contact-north){background:#e8effc;border:1px solid #c3d3f0;box-shadow:none;justify-content:center}
+.page-home .intro-phone-grid>a:not(.contact-north) small{font-size:.72rem;font-weight:650;color:#304c75}
+.page-home .intro-phone-grid>a:not(.contact-north) strong{font-size:1.22rem;color:#14243b}
+.page-home #servicios .cards{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.page-home #servicios .card-body{padding:21px}
+.page-home #servicios h3{font-size:1.12rem}
+.page-home #servicios .card-body p{font-size:.85rem}
+.starlink-photo{margin:24px 0 18px;border:1px solid #d5dfef;border-radius:12px;padding:20px;background:#fff}
+.starlink-photo img{display:block;width:100%;height:250px;object-fit:contain}
+.starlink-photo figcaption{font-size:.69rem;color:#536786;margin-top:9px}
+.starlink-detail{padding-top:48px}.starlink-source{font-size:.78rem;color:#536786;margin-top:24px}.starlink-source a{text-decoration:underline}
+.starlink-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:45px;align-items:center}.starlink-hero h1{font-size:clamp(2.2rem,4vw,4rem)}.starlink-hero .starlink-photo img{height:320px}.starlink-work .planning-grid{gap:20px}
+@media(min-width:761px) and (max-width:1199px){.page-home #servicios .cards{grid-template-columns:repeat(6,minmax(0,1fr))}.page-home #servicios .service-card{grid-column:span 2}.page-home #servicios .service-card:nth-child(4){grid-column:2/span 2}.page-home #servicios .service-card:nth-child(5){grid-column:4/span 2}.page-home .intro-phone-grid{grid-template-columns:1fr}.page-home .intro-phone-grid>a.contact-north{display:grid;grid-template-columns:1fr auto;align-items:center}.page-home .intro-phone-grid>a.contact-north strong{font-size:1.35rem}.page-home .intro-phone-grid>a.contact-north .north-label{font-size:.79rem}.page-home .intro-phone-grid>a.contact-north .north-label span{font-size:.74rem}.page-home .intro-phone-grid>a:not(.contact-north){flex-direction:row;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px}}
+@media(max-width:760px){
+ .page-home .intro-phone-grid{grid-template-columns:1fr;gap:8px}
+ .page-home .intro-phone-grid>a.contact-north{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:12px 14px;gap:10px;border-radius:12px}
+ .page-home .intro-phone-grid>a.contact-north .north-label{font-size:.88rem;line-height:1.2}
+ .page-home .intro-phone-grid>a.contact-north .north-label span{font-size:.79rem}
+ .page-home .intro-phone-grid>a.contact-north strong{font-size:1.65rem;letter-spacing:-.035em}
+ .page-home .intro-phone-grid>a:not(.contact-north){flex-direction:row;align-items:center;justify-content:space-between;padding:9px 14px;gap:10px}
+ .page-home .intro-phone-grid>a:not(.contact-north) small{font-size:.72rem}
+ .page-home .intro-phone-grid>a:not(.contact-north) strong{font-size:1.13rem}
+ .page-home #servicios .cards{grid-template-columns:1fr}
+ .page-home #servicios .card-body{padding:18px}
+ .page-home #servicios h3{font-size:1.1rem}
+ .starlink-hero{grid-template-columns:1fr;gap:12px}.starlink-hero .starlink-photo{margin:0}.starlink-hero .starlink-photo img{height:240px}.starlink-detail .starlink-photo img{height:190px}
+}
+@media(max-width:359px){.page-home .intro-phone-grid>a.contact-north{padding:11px 12px;gap:8px}.page-home .intro-phone-grid>a.contact-north .north-label{font-size:.77rem}.page-home .intro-phone-grid>a.contact-north .north-label span{font-size:.7rem}.page-home .intro-phone-grid>a.contact-north strong{font-size:1.35rem}.page-home .intro-phone-grid>a:not(.contact-north) small{font-size:.68rem}.page-home .intro-phone-grid>a:not(.contact-north) strong{font-size:1.06rem}}

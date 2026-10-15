@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {prioritizeNorth,localStarlink,starlinkCard,validatePhoto,one,section} from '../scripts/starlink.mjs';
+const north='<a href="tel:+34641589394"><small>Norte y Castilla y León</small><strong>641 589 394</strong></a>';
+const center='<a href="tel:+34614789945">Madrid y zona centro</a>';
+const changed=prioritizeNorth(north+center);assert(changed.includes('ZONA NORTE'));assert(changed.includes('CASTILLA Y LEÓN'));assert(changed.includes(center));assert(changed.includes('641 589 394'));
+assert.throws(()=>prioritizeNorth(changed));assert.throws(()=>one('aa','a','x','duplicado'));
+const local=localStarlink('Zalla');assert(local.includes('Instalación de antenas Starlink en Zalla'));assert(local.includes('id="starlink"'));assert(!localStarlink('<img>').includes('en <img>'));
+assert(starlinkCard().includes('05'));assert(starlinkCard().includes('/servicios/starlink/'));assert(!local.includes('instalador oficial'));
+assert.equal(section('<main><section id="x"><section>Interior</section></section></main>','x'),'<section id="x"><section>Interior</section></section>');assert.throws(()=>validatePhoto(Buffer.from('no es una foto')));
+console.log('TESTS STARLINK OK: Norte destacado, dos teléfonos conservados, quinta tarjeta, encabezados locales, imágenes y plantillas protegidas.');
