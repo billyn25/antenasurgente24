@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 
 export const slogan='Profesional en antenas cerca de tu localidad';
-export const version='viviendas-amplificacion-v1';
+export const version='amplificacion-debajo-servicios-v2';
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // Fotografías de catálogo del fabricante, nunca presentadas como trabajos locales.
 export const media=[
@@ -47,9 +47,19 @@ const badge='<p class="residential-badge"><strong>Servicios para viviendas y com
 function productFigure(item,cls=''){
  return `<figure class="equipment-photo ${cls}"><img src="/assets/${item.name}" alt="${e(item.alt)}" width="600" height="600" loading="lazy" decoding="async"><figcaption>Equipo de referencia · <a href="${item.source}" target="_blank" rel="noopener noreferrer">Catálogo Televés</a>. No corresponde a una intervención local.</figcaption></figure>`;
 }
-export function amplification(place='',nested=false){
+export function amplification(place='',nested=false,home=false){
  const location=place?' en '+place:'';
- return `<section class="${nested?'':'section wrap '}amplification-section" id="amplificacion"><div class="amplification-layout"><div><span class="kicker">Señal para viviendas y comunidades</span><h2>Instalación y reparación de sistemas de amplificación${location}</h2><p class="amplification-lead">Previos de antena, fuentes de alimentación, amplificadores y sistemas monocanal para comunidades de propietarios.</p><div class="amplification-grid"><article><h3>Instalación nueva</h3><p>Estudio de la recepción, el recorrido del cable y las tomas que deben recibir señal. Selección y ajuste de los equipos de amplificación según la instalación, tanto individual como colectiva.</p></article><article><h3>Previos y fuentes de alimentación</h3><p>Revisión, reparación o sustitución del previo y de la fuente compatible. Se comprueba la alimentación que necesita el sistema antes de cambiar componentes.</p></article><article><h3>Monocanales para comunidades</h3><p>Instalación, sustitución y ajuste de módulos de amplificación monocanal y de su fuente. Revisión de la cabecera y la distribución para delimitar fallos que afectan a varios vecinos.</p></article><article><h3>Reparación de amplificadores</h3><p>Diagnóstico de alimentación, conexiones y señal para decidir el alcance de la reparación o sustitución. Aumentar la ganancia sin comprobar la instalación no sustituye la revisión de la avería.</p></article></div><p class="amplification-note"><strong>Al solicitar el servicio:</strong> indica si necesitas una instalación nueva o una reparación, cuántas viviendas están afectadas y qué canales fallan. No abras fuentes ni equipos de cabecera.</p><a class="btn btn-dark" href="#contacto">Consultar amplificación para mi instalación ↗</a></div>${productFigure(media[1],'amplifier-photo')}</div></section>`;
+ const heading=home?'<header class="amplification-heading"><span class="card-number" aria-hidden="true">04</span><div><span class="kicker">Para viviendas y comunidades</span><h2 id="amplification-home-title">Sistemas de amplificación</h2><p>Instalación nueva · Reparación · Renovación</p></div></header>':'';
+ return `<section class="${nested?'':'section wrap '}amplification-section${home?' amplification-home':''}" id="amplificacion"${home?' aria-labelledby="amplification-home-title"':''}>${heading}<div class="amplification-layout"><div>${home?'':`<span class="kicker">Señal para viviendas y comunidades</span><h2>Instalación y reparación de sistemas de amplificación${location}</h2>`}<p class="amplification-lead">Previos de antena, fuentes de alimentación, amplificadores y sistemas monocanal para comunidades de propietarios.</p><div class="amplification-grid"><article><h3>Instalación nueva</h3><p>Estudio de la recepción, el recorrido del cable y las tomas que deben recibir señal. Selección y ajuste de los equipos de amplificación según la instalación, tanto individual como colectiva.</p></article><article><h3>Previos y fuentes de alimentación</h3><p>Revisión, reparación o sustitución del previo y de la fuente compatible. Se comprueba la alimentación que necesita el sistema antes de cambiar componentes.</p></article><article><h3>Monocanales para comunidades</h3><p>Instalación, sustitución y ajuste de módulos de amplificación monocanal y de su fuente. Revisión de la cabecera y la distribución para delimitar fallos que afectan a varios vecinos.</p></article><article><h3>Reparación de amplificadores</h3><p>Diagnóstico de alimentación, conexiones y señal para decidir el alcance de la reparación o sustitución. Aumentar la ganancia sin comprobar la instalación no sustituye la revisión de la avería.</p></article></div><p class="amplification-note"><strong>Al solicitar el servicio:</strong> indica si necesitas una instalación nueva o una reparación, cuántas viviendas están afectadas y qué canales fallan. No abras fuentes ni equipos de cabecera.</p><a class="btn btn-dark" href="#contacto">Consultar amplificación para mi instalación ↗</a></div>${productFigure(media[1],'amplifier-photo')}</div></section>`;
+}
+// El bloque debe ser el siguiente servicio visible tras las tres tarjetas, no
+// quedar debajo de viviendas/comunidades ni introducir una segunda copia.
+export function verifyHomeOrder(html){
+ if((html.match(/\bid="amplificacion"/g)||[]).length!==1)throw Error('Portada: debe existir una sola sección de amplificación');
+ const adjacent=/<section\b[^>]*\bid="servicios"[^>]*>[\s\S]*?<\/section>\s*<section\b[^>]*\bid="amplificacion"/;
+ if(!adjacent.test(html))throw Error('Portada: amplificación debe ir inmediatamente debajo de los servicios');
+ const beforeProperties=/<section\b[^>]*\bid="amplificacion"[^>]*>[\s\S]*?<\/section>\s*<section\b[^>]*\bid="tipos-instalacion"/;
+ if(!beforeProperties.test(html))throw Error('Portada: amplificación debe ir antes de viviendas y comunidades');
 }
 export function residentialTransform(html,page){
  if(!html.includes('content="azul-confianza-v1"'))throw Error('Falta la composición previa: '+page.url);
@@ -67,8 +77,9 @@ export function residentialTransform(html,page){
   html=one(html,'Antenista en tu pueblo para instalar, reparar y renovar. Televisión, porteros y videoporteros: tres especialidades, un contacto para tu zona.','Desde la antena de tu vivienda hasta la cabecera de toda la comunidad. Consulta el servicio técnico de tu localidad, con atención directa y condiciones claras.','introducción residencial');
   const property=/<section class="section wrap property-section" id="tipos-instalacion">[\s\S]*?<\/section>/g;
   if([...html.matchAll(property)].length!==1)throw Error('Falta el bloque de inmuebles');
-  html=html.replace(property,amplification()+propertySection);
+  html=html.replace(property,amplification('',false,true)+propertySection);
   html=one(html,'<div class="service-tags">',badge+'<div class="service-tags">','destacado residencial');
+  verifyHomeOrder(html);
  }
  if(['service','province','town'].includes(page.type)){
   const marker='<section class="local-hero wrap">';
@@ -109,9 +120,9 @@ export async function applyResidential(root='dist'){
   fs.writeFileSync(file,residentialTransform(fs.readFileSync(file,'utf8'),page));
  }
  report.presentation.slogan=slogan;report.presentation.homePhotos=5;
- report.focus={version,slogan,audiences:['Viviendas particulares','Comunidades de propietarios'],townAntennaPhotos:report.totalTowns,amplificationPages:report.totalTowns+2,media:images};
+ report.focus={version,slogan,audiences:['Viviendas particulares','Comunidades de propietarios'],townAntennaPhotos:report.totalTowns,amplificationPages:report.totalTowns+2,homeSectionOrder:['servicios','amplificacion','tipos-instalacion'],media:images};
  fs.writeFileSync(reportPath,JSON.stringify(report,null,2));
- console.log('RESIDENCIAL OK: eslogan exacto; viviendas y comunidades destacadas; '+report.totalTowns+' fichas con foto de antena Televés; amplificación, previos, fuentes y monocanales con foto.');
+ console.log('RESIDENCIAL OK: amplificación 04 inmediatamente debajo de Antenas, Porteros y Videoporteros; antes de viviendas/comunidades. '+report.totalTowns+' fichas con foto de antena Televés; previos, fuentes y monocanales con foto conservados.');
  for(const item of images)console.log('FOTO VERIFICADA '+item.name+' '+item.width+'x'+item.height+' '+item.bytes+' bytes SHA256 '+item.sha256);
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await applyResidential();
