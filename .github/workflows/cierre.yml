@@ -19,6 +19,11 @@ jobs:
           node-version: '22'
       - run: npm run check
       - run: node scripts/seo-review.mjs --network
+      - name: Navegador y privacidad
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.56.1
+          npx playwright install chromium
+          npm run test:browser
       - name: Copia reproducible de la auditoría
         run: |
           node --input-type=module -e "import fs from 'node:fs'; import {source} from './scripts/municipios.mjs'; const r=await fetch(source); if(!r.ok)throw Error(r.status);fs.writeFileSync('config/municipios.audit.json', await r.text())"
@@ -31,4 +36,5 @@ jobs:
           path: |
             paquete/
             seo-review/
+            browser-artifacts/
           retention-days: 7

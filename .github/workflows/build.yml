@@ -26,7 +26,7 @@ jobs:
         run: npm run test:browser
       - name: Comprobar versión pública de Netlify
         if: github.ref == 'refs/heads/main'
-        run: node tests/live.mjs
+        run: node tests/live.mjs && node tests/closure-live.mjs
       - name: Capturas y métricas del navegador
         if: always()
         uses: actions/upload-artifact@v4
