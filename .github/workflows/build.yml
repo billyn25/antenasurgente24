@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,6 +38,9 @@ jobs:
       - name: Verificar teléfonos del pie publicados, móvil y sin JavaScript
         if: github.ref == 'refs/heads/main'
         run: node tests/footer-contacts-live.mjs
+      - name: Comprobar SEO de pueblos, reparaciones y las veinte provincias publicadas
+        if: github.ref == 'refs/heads/main'
+        run: node tests/town-seo-live.mjs
       - name: Capturas y métricas del navegador
         if: always()
         uses: actions/upload-artifact@v4

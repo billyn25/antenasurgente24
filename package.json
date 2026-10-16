@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/presentation.mjs && node tests/residential.mjs && node tests/navigation.mjs && node tests/service-footer.mjs && node tests/starlink.mjs && node tests/closure.mjs && node tests/local-content.mjs && node tests/footer-contacts.mjs",
+    "test": "node tests/presentation.mjs && node tests/residential.mjs && node tests/navigation.mjs && node tests/service-footer.mjs && node tests/starlink.mjs && node tests/closure.mjs && node tests/local-content.mjs && node tests/footer-contacts.mjs && node tests/town-seo.mjs",
     "build:base": "node scripts/build.mjs && node scripts/presentation.mjs && node scripts/residential.mjs",
-    "build": "npm run build:base && node scripts/audit.mjs && node scripts/navigation.mjs && node scripts/service-footer.mjs && node scripts/audit-navigation.mjs && node scripts/starlink.mjs && node scripts/audit-starlink.mjs && node scripts/closure.mjs",
-    "audit": "node scripts/audit-closure.mjs && node scripts/audit-local-content.mjs && node scripts/audit-footer-contacts.mjs",
+    "build": "npm run build:base && node scripts/audit.mjs && node scripts/navigation.mjs && node scripts/service-footer.mjs && node scripts/audit-navigation.mjs && node scripts/starlink.mjs && node scripts/audit-starlink.mjs && node scripts/closure.mjs && node scripts/town-seo.mjs",
+    "audit": "node scripts/audit-closure.mjs && node scripts/audit-local-content.mjs && node scripts/audit-footer-contacts.mjs && node scripts/town-seo.mjs --audit",
     "check": "npm run test && npm run build && npm run audit",
     "test:browser": "node tests/starlink-browser.mjs && node tests/closure-browser.mjs && node tests/local-browser.mjs",
     "audit:seo": "node scripts/seo-review.mjs"

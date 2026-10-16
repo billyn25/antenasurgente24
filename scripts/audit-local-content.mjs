@@ -9,7 +9,7 @@ for(const [name,entry] of Object.entries(images)){
 for(const p of report.pages){
  const html=fs.readFileSync(fileFor(root,p.url),'utf8');
  if(['town','district'].includes(p.type)){
-  assert(html.includes('data-local-version="'+localVersion+'"'));assert(html.includes('name="nucleo"'));assert.equal((html.match(/data-request-service=/g)||[]).length,5);localPages++;
+  assert(html.includes('data-local-version="'+localVersion+'"'));assert(html.includes('name="nucleo"'));assert.equal((html.match(/data-request-service=/g)||[]).length,9);localPages++;
   if(localProfiles[p.url]){assert(html.includes('id="direccion-local"'));for(const source of localProfiles[p.url].sources)assert(html.includes(source.url));profiles++;}
  }
  for(const image of html.matchAll(/<img\b[^>]*srcset="([^"]+)"[^>]*>/g)){

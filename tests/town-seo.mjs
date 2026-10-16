@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {transform,repairs} from '../scripts/town-seo.mjs';
+const blocks=['antenas','amplificacion','porteros','videoporteros','starlink'].map(id=>`<section class="service-detail local-service-brief" id="${id}"><h2>Instalación en Pueblo</h2><p>Texto técnico</p><div class="actions"><a href="#contacto" data-request-service="Instalación">Consultar este servicio ↗</a><a class="local-guide-link" href="/servicios/antenas/">Guía ↗</a></div></section>`).join('');
+const fixture=`<html><head><title>Antenista en Pueblo, Burgos | 641 589 394</title><meta name="description" content="Anterior"><meta property="og:description" content="Anterior"><meta name="robots" content="noindex,follow"><link rel="canonical" href="https://example.org/provincias/burgos/pueblo/"><script type="application/ld+json">{"@graph":[{"@type":"WebPage","description":"Anterior"},{"@type":"Service","url":"https://example.org/provincias/burgos/pueblo/"}]}</script></head><body><header>Marca intacta</header><main id="contenido"><h1>Antenista en<br>Pueblo.</h1>${blocks}<details><summary>¿Qué incluye el presupuesto?</summary><p>El precio depende de la instalación y del trabajo acordado; </p></details><section id="contacto"><form id="whatsapp-aviso"><input name="nucleo"><a href="tel:+34641589394">641 589 394</a></form></section></main><footer>Pie intacto</footer></body></html>`;
+const p={url:'/provincias/burgos/pueblo/',type:'town',phone:'641 589 394',description:'Anterior'};
+const out=transform(fixture,p,'Burgos');assert(out.description.includes('reparación'));assert(out.description.includes('Pueblo, Burgos'));
+assert.equal((out.html.match(/data-request-service=/g)||[]).length,9);
+for(const s of repairs)assert(out.html.includes(`data-request-service="${s.request}"`));
+assert(!out.html.includes('trabajo acordado; </p>'));
+assert.equal(transform(out.html,{...p,description:out.description},'Burgos').html,out.html);
+assert.equal(out.html.match(/<title>.*?<\/title>/)[0],fixture.match(/<title>.*?<\/title>/)[0]);
+assert(out.html.includes('content="noindex,follow"'));assert(out.html.includes('Marca intacta'));assert(out.html.includes('Pie intacto'));
+assert.throws(()=>transform(fixture.replace('id="porteros"','id="ausente"'),p,'Burgos'));
+assert.throws(()=>transform(fixture.replace('¿Qué incluye el presupuesto?','Pregunta alterada'),p,'Burgos'));
+assert.deepEqual(transform(fixture,{...p,type:'legal',url:'/cookies/'},'Burgos'),{html:fixture,description:'Anterior'});
+const district=fixture.replace('Pueblo.</h1>','Centro, Madrid.</h1>').replace('¿Qué incluye el presupuesto?','Pregunta del distrito');
+const d=transform(district,{...p,type:'district',url:'/provincias/madrid/madrid/centro/',phone:'614 789 945'},'Madrid');assert(d.description.includes('Centro, Madrid.'));assert(!d.description.includes('Madrid, Madrid'));
+console.log('PRUEBAS SEO PUEBLOS OK: metadatos, reparación e instalación separados, presupuesto completo y aislamiento.');
