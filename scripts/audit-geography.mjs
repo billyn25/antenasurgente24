@@ -8,6 +8,7 @@ for(const p of report.pages.filter(p=>p.type==='town')){
  const m=byRoute.get(p.url);assert(m,p.url);const html=fs.readFileSync(fileFor('dist',p.url),'utf8');
  assert(html.includes('id="municipios-proximos"'),p.url);assert(!html.includes('Enlaces del directorio por orden alfabético'),p.url);
  assert(html.includes('name="sintoma"')&&html.includes('name="alcance"'),p.url);
+ assert(html.includes(m.population.toLocaleString('es-ES')+' habitantes')&&html.includes('Censo anual de población'),p.url+': población sin fuente');
  assert(!/¿Instaláis porteros automáticos en/.test(html),p.url+': FAQ redundante');
  for(const [code] of m.nearby){const {geography}=await import('./local-geography.mjs');const target=geography.municipalities[code].url;assert(routes.has(target),target);assert(html.includes('href="'+target+'"'),p.url);}
  count++;

@@ -11,6 +11,9 @@ for(const [code,m] of Object.entries(geography.municipalities)){
 const p={type:'town',url:'/provincias/bizkaia/bakio/'};
 const result=addLocalGeography('<section class="section wrap"><span class="kicker">Directorio de Bizkaia</span><p>Alfabético</p></section><form><label class="wide local-address-field">Barrio</label></form>',p);
 assert(result.includes('Basigo'));assert(result.includes('Maruri'));assert(result.includes('línea recta'));assert(!result.includes('Alfabético'));
+assert(result.includes('2856 habitantes'));assert(result.includes('Censo anual de población 2025'));assert(result.includes('https://www.ine.es/'));
+assert.equal(byRoute.get('/provincias/madrid/madrid/').population,3477497);
+for(const m of byRoute.values())assert(Number.isInteger(m.population)&&m.population>=0);
 assert.equal((result.match(/<li>/g)||[]).length,6);
 assert.throws(()=>addLocalGeography('',{type:'town',url:'/inexistente/'}),/Falta geografía/);
 console.log('GEOGRAFÍA OK: 4035 referencias, seis destinos válidos y distancias ordenadas; capital de Bakio y sustitución del orden alfabético.');

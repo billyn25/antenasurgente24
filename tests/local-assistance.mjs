@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const field=value=>({value,callbacks:[],addEventListener(event,fn){if(event==='change')this.callbacks.push(fn);},change(value){this.value=value;for(const fn of this.callbacks)fn();}});
+const service=field('Reparación de videoporteros'),symptom=field(''),scope=field(''),property=field('Vivienda particular');
+const form={elements:{servicio:service,sintoma:symptom,alcance:scope,inmueble:property}};
+const help={textContent:''};
+vm.runInNewContext(fs.readFileSync('src/local-assistance.js','utf8'),{document:{getElementById:id=>id==='whatsapp-aviso'?form:help,querySelectorAll:()=>[]},Event:class{}});
+assert(help.textContent.includes('número de monitores'));
+symptom.change('Videoportero sin imagen');assert(help.textContent.includes('pantalla está apagada'));assert(help.textContent.includes('En vivienda individual'));
+scope.change('Varias viviendas de la comunidad');assert(help.textContent.includes('autorizar la intervención'));assert(!help.textContent.includes('En vivienda individual'));
+symptom.change('No abre la puerta');assert(help.textContent.includes('No fuerces la puerta'));
+scope.change('Solo un equipo o una toma');property.change('Comunidad');symptom.change('Pixelación o faltan algunos canales');assert(help.textContent.includes('dos o tres canales'));assert(!help.textContent.includes('autorizar la intervención'));
+symptom.change('');service.change('Instalación de antenas Starlink');assert(help.textContent.includes('modelo del kit'));
+console.log('ASISTENCIA OK: consejos por avería y alcance; vivienda individual, comunidad y cambios de selección sin consejos obsoletos.');
