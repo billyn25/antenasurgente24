@@ -142,9 +142,12 @@ export function improveLocalContent(html,p){
  if(profile){
   const old=html.match(/<section class="context-box">[\s\S]*?<\/section>/);assert(old,'Falta el contexto de '+p.url);
   html=html.replace(old[0],()=>profileBlock(profile,place,p.url));
+ }else if(p.type==='town'){
+  const old=html.match(/<section class="context-box">[\s\S]*?<\/section>/);assert(old,'Falta contexto municipal '+p.url);
+  html=html.replace(old[0],()=>'<section class="context-box local-address-guide"><h2>Tu aviso en '+e(place)+'</h2><p>Selecciona el servicio y el tipo de inmueble. La consulta conserva tu municipio y el teléfono de la provincia; puedes añadir el barrio o núcleo antes de abrir WhatsApp.</p>'+practicalBlock(place,p.url)+'</section>');
  }else{
-  const old=html.match(/<section class="context-box">[\s\S]*?<\/section>/);assert(old);
-  html=html.replace(old[0],()=>'<section class="context-box local-address-guide"><h2>Tu aviso en '+e(place)+'</h2><p>Selecciona el servicio y el tipo de inmueble. La consulta conserva tu ubicación y el teléfono de la provincia; puedes añadir el barrio o núcleo antes de abrir WhatsApp.</p>'+practicalBlock(place,p.url)+'</section>');
+  const old=html.match(/<section class="context-box district-context">[\s\S]*?<\/section>/);assert(old,'Falta contexto distrital '+p.url);
+  html=html.replace(old[0],()=>old[0]+practicalBlock(place,p.url));
  }
  html=enrichForm(html,p,profile);
  // These installation answers repeat the service blocks immediately above.
