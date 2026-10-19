@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import contexts from '../config/local-contexts.json' with {type:'json'};
 import {districts} from '../config/madrid-districts.mjs';
 import {section,decode} from './starlink.mjs';
-export const localVersion='local-casos-tecnicos-v2';
+export const localVersion='local-casos-tecnicos-v3';
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const localProfiles=contexts.locations;
 export const localTechnicalProfiles=[
@@ -61,10 +61,30 @@ export const localTechnicalProfiles=[
   ['Derivadores, repartidores y tomas forman parte de la avería','Que la antena reciba bien no garantiza que la señal llegue igual a todas las viviendas. Se revisan pérdidas y conexiones a lo largo de la red antes de aumentar ganancia.'],
   ['Una reforma puede cambiar el recorrido de la señal','Si el fallo empezó tras mover una toma, cambiar cableado o reformar una vivienda, ese cambio ayuda a localizar la incidencia sin intervenir primero en la cabecera comunitaria.'],
   ['Distinguir red común y red interior','Si otros vecinos ven correctamente la televisión, el diagnóstico puede concentrarse en la derivación o instalación de la vivienda; si fallan varios, se priorizan los elementos comunes.']
+ ]},
+ {id:'antena-deteriorada',heading:'Antenas envejecidas o incompletas',items:[
+  ['Antena con directores o elementos rotos','Una antena puede seguir dando imagen aunque haya perdido parte de sus elementos, pero su comportamiento puede empeorar frente a ruido, viento o señales débiles. Se revisa el estado mecánico junto con nivel y calidad antes de decidir si compensa sustituirla.'],
+  ['Material antiguo que ya limita la instalación','Antenas, repartidores, conectores o amplificadores muy antiguos pueden seguir funcionando parcialmente y aun así no ofrecer el margen necesario. Se comprueba qué componente está realmente obsoleto antes de renovar el conjunto.'],
+  ['Antena sin suficiente altura o despeje','Si la antena queda escondida tras cubierta, edificios, arbolado o relieve, aumentar ganancia no siempre resuelve el problema. Se valora si ganar altura o cambiar el punto de captación mejora la recepción de forma medible.']
+ ]},
+ {id:'mastil-humedad-filtrado',heading:'Mástil, humedad y filtrado de señal',items:[
+  ['Amplificador de mástil mojado o con humedad','Un previo o amplificador exterior expuesto a agua puede provocar cortes, pérdidas o fallos intermitentes. Se revisan caja, alimentación, conectores y estado del equipo antes de atribuir la avería a la antena.'],
+  ['Filtro 4G/5G inadecuado o ausente','Cuando entran señales móviles próximas a la banda de televisión, se comprueba si la instalación dispone del filtrado adecuado y si el problema es realmente interferencia. No se instala un filtro por rutina sin medir primero.'],
+  ['Conexiones exteriores oxidadas','Agua y oxidación en conectores, empalmes o cajas pueden degradar la señal progresivamente. Una instalación puede parecer correcta en seco y fallar después de lluvia o con cambios de temperatura.']
+ ]},
+ {id:'reemisores-tdt',heading:'Emisores, reemisores y orientación',items:[
+  ['Recepción desde más de un emisor o reemisor','En algunos emplazamientos pueden llegar señales por direcciones distintas. La revisión compara nivel y calidad antes de decidir orientación, filtrado o configuración de cabecera; recibir más potencia no siempre significa recibir mejor.'],
+  ['Cambio de orientación tras viento','Una antena ligeramente girada puede seguir recibiendo parte de la TDT y perder margen en determinados múltiplex. Se comprueba fijación, orientación y calidad antes de sustituir equipos.'],
+  ['Repetidor TDT como parte del entorno de recepción','Cuando la señal disponible depende de un centro reemisor, interesa identificar qué señal está recibiendo realmente la instalación. No se presupone qué emisor corresponde a un pueblo sin comprobar la ubicación y la recepción efectiva.']
+ ]},
+ {id:'torreta-renovacion',heading:'Torretas, altura y renovación estructural',items:[
+  ['Ganar altura cuando la medición lo justifica','En cubiertas con obstáculos puede ser útil elevar la captación con mástil o torreta, siempre que la mejora se confirme y el soporte pueda instalarse con estabilidad y seguridad.'],
+  ['Desmontar una torreta antigua','Una estructura antigua puede dejar de ser necesaria después de cambiar el sistema de recepción. Antes de retirarla se identifica qué antenas y servicios soporta y cómo quedará resuelta la instalación.'],
+  ['Antena motorizada para varias posiciones orbitales','Una parabólica motorizada requiere más que orientar una antena fija: recorrido libre, soporte estable, ajuste mecánico y compatibilidad de control con el receptor. Se valora como instalación específica, no como ampliación automática.']
  ]}
 ];
 export function technicalProfileFor(key){
- const digest=createHash('sha256').update('urgente24-casos-v2:'+String(key)).digest();
+ const digest=createHash('sha256').update('urgente24-casos-v3:'+String(key)).digest();
  const profile=localTechnicalProfiles[digest[0]%localTechnicalProfiles.length];
  const shift=digest[1]%profile.items.length;
  return {...profile,items:[...profile.items.slice(shift),...profile.items.slice(0,shift)]};
