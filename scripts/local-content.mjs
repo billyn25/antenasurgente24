@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import contexts from '../config/local-contexts.json' with {type:'json'};
 import {districts} from '../config/madrid-districts.mjs';
 import {section,decode} from './starlink.mjs';
-export const localVersion='local-combinaciones-tecnicas-v4';
+export const localVersion='local-combinaciones-tecnicas-v5';
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const localProfiles=contexts.locations;
 export const localTechnicalProfiles=[
@@ -139,17 +139,21 @@ const technicalHeadings=[
  'Qué revisar antes de decidir una sustitución'
 ];
 export function technicalProfileFor(key){
- const digest=createHash('sha256').update('urgente24-combinaciones-v4:'+String(key)).digest();
- const total=localTechnicalProfiles.length;
- const start=digest[0]%total;
- const step=(digest[1]%(total-1))+1;
- const familyIndexes=[start,(start+step)%total,(start+2*step)%total];
- const items=familyIndexes.map((index,i)=>{
-  const family=localTechnicalProfiles[index];
-  return family.items[digest[2+i]%family.items.length];
+ const seed='urgente24-combinaciones-v5:'+String(key);
+ const ranked=localTechnicalProfiles.map((family,index)=>({
+  family,index,
+  score:createHash('sha256').update(seed+'|family|'+family.id).digest('hex')
+ })).sort((a,b)=>a.score.localeCompare(b.score));
+ const chosen=ranked.slice(0,3);
+ const items=chosen.map(({family})=>{
+  const digest=createHash('sha256').update(seed+'|item|'+family.id).digest();
+  return family.items[digest[0]%family.items.length];
  });
- const combo=createHash('sha256').update(familyIndexes.map((index,i)=>localTechnicalProfiles[index].id+':'+localTechnicalProfiles[index].items.indexOf(items[i])).join('|')).digest('hex').slice(0,12);
- return {id:'combo-'+combo,heading:technicalHeadings[digest[6]%technicalHeadings.length],items,families:familyIndexes.map(i=>localTechnicalProfiles[i].id)};
+ const families=chosen.map(x=>x.family.id);
+ const signature=chosen.map(({family},i)=>family.id+':'+family.items.indexOf(items[i])).join('|');
+ const combo=createHash('sha256').update(signature).digest('hex').slice(0,12);
+ const headingDigest=createHash('sha256').update(seed+'|heading').digest();
+ return {id:'combo-'+combo,heading:technicalHeadings[headingDigest[0]%technicalHeadings.length],items,families};
 }
 function practicalBlock(place,key){
  const profile=technicalProfileFor(key);
