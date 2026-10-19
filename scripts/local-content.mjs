@@ -117,8 +117,8 @@ export function improveLocalContent(html,p){
  if(!['town','district'].includes(p.type))return html;
  const place=nameOf(html),profile=localProfiles[p.url];
  for(const s of serviceBriefs)html=html.replace(section(html,s.id),()=>brief(s,place));
- // Do not manufacture unique text from random templates or geographical names.
- // Only records with an explicitly researched source get a factual local guide.
+ // Do not invent geographical facts or claim that a fault is prevalent in a town.
+ // Researched local facts remain sourced; the technical cases below are stable diagnostic scenarios, not local claims.
  if(profile){
   const old=html.match(/<section class="context-box">[\s\S]*?<\/section>/);assert(old,'Falta el contexto de '+p.url);
   html=html.replace(old[0],()=>profileBlock(profile,place,p.url));
