@@ -41,7 +41,8 @@ function enrichForm(html,p,profile){
  const anchor='<label>Tu teléfono (opcional)';assert(html.includes(anchor),'Formulario local no reconocido');
  html=html.replace(anchor,field+anchor);
  const textarea='<label class="wide">Cuéntanos qué ocurre';assert(html.includes(textarea));
- html=html.replace(textarea,'<p class="wide service-request-help" id="service-request-help" role="status">Selecciona el servicio para ver qué información conviene facilitar.</p>'+textarea);
+ const symptoms='<label>Qué necesitas (opcional)<select name="sintoma"><option value="">Selecciona el problema</option><optgroup label="Antenas y amplificación"><option>Sin señal en todos los canales</option><option>Pixelación o faltan algunos canales</option><option>Una toma funciona y otra no</option></optgroup><optgroup label="Porteros automáticos y videoporteros"><option>No suena la llamada</option><option>No se oye o solo se oye en un sentido</option><option>No abre la puerta</option><option>Videoportero sin imagen</option></optgroup><optgroup label="Starlink"><option>Montaje de un kit Starlink nuevo</option><option>Reubicación de una antena Starlink</option></optgroup><option>Instalación nueva o renovación</option><option>Otro problema</option></select></label><label>A quién afecta (opcional)<select name="alcance"><option value="">Sin confirmar</option><option>Solo un equipo o una toma</option><option>Toda mi vivienda</option><option>Varias viviendas de la comunidad</option><option>Toda la comunidad</option><option>Es una instalación nueva</option></select></label>';
+ html=html.replace(textarea,symptoms+'<p class="wide service-request-help" id="service-request-help" role="status">Selecciona el servicio para ver qué información conviene facilitar.</p>'+textarea);
  return html;
 }
 export function improveLocalContent(html,p){
@@ -58,6 +59,9 @@ export function improveLocalContent(html,p){
   html=html.replace(old[0],()=>'<section class="context-box local-address-guide"><h2>Tu aviso en '+e(place)+'</h2><p>Selecciona el servicio y el tipo de inmueble. La consulta conserva tu municipio y el teléfono de la provincia; puedes añadir el barrio o núcleo de población antes de abrir WhatsApp.</p></section>');
  }
  html=enrichForm(html,p,profile);
+ // These installation answers repeat the service blocks immediately above.
+ // Keep the practical booking, availability and budget questions.
+ if(p.type==='town')html=html.replace(/<details><summary>¿(?:Instaláis porteros automáticos|Puedo cambiar a videoportero) en [\s\S]*?<\/details>/g,'');
  // The application builds a message locally; these attributes do not send data.
  html=html.replace('<main id="contenido">','<main id="contenido" data-local-version="'+localVersion+'">');
  return html;

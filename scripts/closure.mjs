@@ -10,6 +10,7 @@ import {section,fileFor} from './starlink.mjs';
 import {localVersion,localProfiles,improveLocalContent,addServiceResources} from './local-content.mjs';
 import {prepareImages,responsiveHtml} from './responsive-images.mjs';
 import {addFooterContacts,footerContactStyles} from './footer-contacts.mjs';
+import {addLocalGeography} from './local-geography.mjs';
 export const version='local-util-imagenes-v2';
 const e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const hash=s=>createHash('sha256').update(s).digest('hex').slice(0,12);
@@ -63,7 +64,7 @@ export async function applyClosure(root='dist',preparedImages=null){
  const panel='<dialog class="privacy-panel" id="privacy-panel" aria-labelledby="privacy-title"><button type="button" class="privacy-close" data-privacy-close aria-label="Cerrar información de privacidad">×</button><h2 id="privacy-title">Cookies y privacidad</h2><p>No activamos cookies de analítica ni de publicidad. El buscador y el mapa funcionan sin seguimiento.</p><p>WhatsApp solo se abre cuando lo pulsas. Puedes revisar el mensaje antes de enviarlo.</p><div class="actions"><button class="btn btn-dark" type="button" data-privacy-close>Cerrar</button><a class="text-link" href="/cookies/">Ver política de cookies ↗</a></div></dialog>';
  for(const p of report.pages){
   const file=fileFor(root,p.url);let html=fs.readFileSync(file,'utf8').replaceAll(oldBase,base);
-  if(['town','district'].includes(p.type)){html=improveLocalContent(conciseLocal(html),p);compacted++;}
+  if(['town','district'].includes(p.type)){html=addLocalGeography(improveLocalContent(conciseLocal(html),p),p);compacted++;}
   if(legal[p.url])html=html.replace(/<main id="contenido">[\s\S]*?<\/main>/,()=>'<main id="contenido"><nav class="wrap" aria-label="Ruta de navegación"><ol class="breadcrumbs"><li><a href="/">Inicio</a></li><li> / <span aria-current="page">'+e(p.url==='/aviso-legal/'?'Aviso legal':p.url==='/privacidad/'?'Privacidad':'Cookies')+'</span></li></ol></nav><section class="section wrap legal">'+legal[p.url]+'</section></main>');
   html=html.replace('<div class="footer-bottom">','<div class="footer-bottom"><span class="footer-owner">Propiedad de R.F.G.</span>');
   html=html.replace('<a href="/cookies/">Cookies</a>','<a href="/cookies/" data-privacy-open>Cookies y privacidad</a>');
