@@ -39,7 +39,7 @@ export function transform(html,p){
   assert.equal((block.match(/class="service-card(?: [^"]*)?"/g)||[]).length,4,'Faltan servicios de origen');
   html=one(html,block,block.slice(0,-'</div></section>'.length)+starlinkCard()+'</div></section>','quinta tarjeta');
   html=html.replace('Cuatro servicios para viviendas y comunidades','Cinco servicios para viviendas y comunidades');
-  html=html.replace('Antenas, amplificación, porteros y videoporteros.<br>','Antenas, Starlink, amplificación, porteros y videoporteros.<br>');
+  html=html.replace('Antenas, amplificación, porteros automáticos y videoporteros.<br>','Antenas, Starlink, amplificación, porteros automáticos y videoporteros.<br>');
  }
  if(['town','district'].includes(p.type)){
   const h1=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/);assert(h1,'Falta H1 local');
