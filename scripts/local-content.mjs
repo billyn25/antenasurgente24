@@ -81,6 +81,51 @@ export const localTechnicalProfiles=[
   ['Ganar altura cuando la medición lo justifica','En cubiertas con obstáculos puede ser útil elevar la captación con mástil o torreta, siempre que la mejora se confirme y el soporte pueda instalarse con estabilidad y seguridad.'],
   ['Desmontar una torreta antigua','Una estructura antigua puede dejar de ser necesaria después de cambiar el sistema de recepción. Antes de retirarla se identifica qué antenas y servicios soporta y cómo quedará resuelta la instalación.'],
   ['Antena motorizada para varias posiciones orbitales','Una parabólica motorizada requiere más que orientar una antena fija: recorrido libre, soporte estable, ajuste mecánico y compatibilidad de control con el receptor. Se valora como instalación específica, no como ampliación automática.']
+ ]},
+ {id:'antena-conexion-balun',heading:'Antena, dipolo y conexión exterior',items:[
+  ['Caja de conexión de antena deteriorada','La caja del dipolo puede presentar humedad, plástico degradado o conexiones oxidadas. Una antena aparentemente bien orientada puede perder calidad si la conexión entre antena y coaxial está dañada.'],
+  ['Conector o latiguillo exterior defectuoso','Un conector mal montado, flojo o corroído puede provocar cortes y pérdida de determinados canales. Se revisa continuidad y estanqueidad antes de sustituir la antena completa.'],
+  ['Brazo, boom o elementos deformados','Golpes, hielo, viento o envejecimiento pueden deformar partes de la antena. El estado mecánico se valora junto con la medida de señal para decidir si basta reajustar o conviene renovar.']
+ ]},
+ {id:'previo-mastil',heading:'Previos y amplificadores de mástil',items:[
+  ['Amplificador de mástil sin alimentación','Un previo exterior puede estar correcto y no funcionar porque no recibe tensión desde la fuente interior. Se comprueba alimentación por coaxial, conexiones y consumo antes de cambiar el amplificador.'],
+  ['Amplificador de mástil averiado después de tormenta','Una sobretensión o descarga cercana puede dañar el previo, la fuente o ambos. Se mide entrada, salida y alimentación para no sustituir componentes a ciegas.'],
+  ['Amplificador con demasiada ganancia','Un previo ajustado demasiado alto puede saturar etapas posteriores o el propio receptor. Se regula según nivel y calidad, no buscando simplemente la cifra máxima de ganancia.']
+ ]},
+ {id:'fuente-alimentacion-antena',heading:'Fuentes de alimentación de antena',items:[
+  ['Fuente sin tensión de salida','Si la fuente deja de alimentar el previo o la cabecera, puede desaparecer la señal en toda la instalación aunque la antena esté perfecta. Se comprueba tensión y estado del equipo antes de subir a cubierta.'],
+  ['Fuente que falla en caliente o de forma intermitente','Algunas fuentes envejecidas funcionan en frío y fallan al calentarse. Los cortes repetitivos y la recuperación espontánea son datos útiles para orientar la revisión.'],
+  ['Cortocircuito en coaxial que bloquea la alimentación','Un conector mal montado o un cable dañado puede cortocircuitar la alimentación que viaja por coaxial. Se localiza el tramo o conexión defectuosa antes de sustituir fuente o amplificador.']
+ ]},
+ {id:'cabecera-modulos',heading:'Módulos y centrales de cabecera',items:[
+  ['Un módulo monocanal deja de entregar señal','Si solo desaparece un múltiplex en toda la comunidad, puede existir un problema en un módulo, su ajuste o alimentación. Se compara entrada y salida antes de sustituir la cabecera completa.'],
+  ['Central programable desajustada','Una central puede necesitar revisión de niveles, filtros o programación tras cambios de recepción. La solución depende de medidas reales, no de copiar ajustes de otra instalación.'],
+  ['Fuente común de cabecera fatigada','Cuando varios módulos dependen de una misma fuente, una caída de tensión puede provocar averías parciales o intermitentes. Se comprueba la alimentación bajo carga.']
+ ]},
+ {id:'portero-grupo-fonico',heading:'Grupo fónico y audio del portero',items:[
+  ['Se oye desde la vivienda pero no desde la calle','Un fallo de audio en un solo sentido puede estar en micrófono, altavoz, grupo fónico, terminal o cableado. Se separa el sentido de comunicación para localizar la etapa afectada.'],
+  ['No se oye en ninguna vivienda','Cuando el audio falla en todo el portal, se revisan grupo fónico, alimentación y cableado común antes de intervenir telefonillos individuales.'],
+  ['Audio con ruido, zumbido o volumen muy bajo','Zumbidos y audio débil pueden relacionarse con alimentación, conexiones, ajuste o deterioro del grupo fónico. Se comprueba el sistema completo antes de cambiar terminales.']
+ ]},
+ {id:'portero-llamada-pulsadores',heading:'Llamada, pulsadores y cableado del portero',items:[
+  ['Un pulsador de la placa no llama','Si solo falla una vivienda, se revisan pulsador, conductor de llamada y terminal correspondiente antes de atribuir la avería a la placa completa.'],
+  ['Ningún vecino recibe llamada','Una avería general de llamada puede estar en alimentación, electrónica de placa o cable común. Se diferencia del audio y de la apertura para acotar la causa.'],
+  ['La llamada suena en la vivienda equivocada','Cruces de cable, programación o identificación incorrecta pueden provocar llamadas al terminal equivocado. Se revisa el sistema según su tecnología antes de modificar conexiones.']
+ ]},
+ {id:'portero-fuente',heading:'Fuente y alimentación del portero automático',items:[
+  ['Portero completamente apagado','Cuando no hay llamada, audio ni apertura en todo el edificio, una de las primeras comprobaciones es la alimentación del sistema y sus protecciones.'],
+  ['La fuente entrega tensión pero cae al accionar','Una fuente fatigada puede mantener tensión en reposo y caer al llamar o activar el abrepuertas. Se comprueba bajo carga antes de sustituir otros elementos.'],
+  ['Alimentación inestable provoca fallos distintos','Tensiones inestables pueden causar síntomas aparentemente independientes en placa, telefonillos o cerradura. Medir alimentación ayuda a evitar reparaciones por descarte.']
+ ]},
+ {id:'cerradura-abrepuertas',heading:'Cerradura eléctrica y abrepuertas',items:[
+  ['La bobina del abrepuertas no actúa','Si llega la orden eléctrica pero el cerradero no se mueve, se revisan bobina, mecanismo y tensión aplicada antes de sustituir la placa o el telefonillo.'],
+  ['El abrepuertas funciona pero necesita demasiado empuje','Una puerta descolgada, un pestillo forzado o un marco desalineado puede impedir la apertura aunque eléctricamente el sistema funcione. El ajuste mecánico forma parte del diagnóstico.'],
+  ['La puerta queda abierta después de accionar','Un cerradero atascado o mal ajustado puede no recuperar su posición. Se diferencia el problema mecánico del eléctrico antes de cambiar el componente.']
+ ]},
+ {id:'videoportero-imagen',heading:'Cámara, monitor e imagen de videoportero',items:[
+  ['Hay llamada y audio pero la pantalla queda negra','Cuando las demás funciones responden, se revisan cámara, monitor, alimentación de vídeo y conexiones específicas antes de sustituir todo el sistema.'],
+  ['Imagen con interferencias o cortes','Una imagen inestable puede estar relacionada con alimentación, cableado, conectores o compatibilidad entre equipos. Se compara con otros monitores si los hay.'],
+  ['Solo falla un monitor de la comunidad','Si los demás vecinos ven correctamente, la revisión se concentra en ese terminal y su derivación, evitando intervenir primero en la placa exterior.']
  ]}
 ];
 const technicalHeadings=[
