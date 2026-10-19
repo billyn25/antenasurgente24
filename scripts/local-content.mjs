@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import contexts from '../config/local-contexts.json' with {type:'json'};
 import {districts} from '../config/madrid-districts.mjs';
 import {section,decode} from './starlink.mjs';
-export const localVersion='local-casos-tecnicos-v3';
+export const localVersion='local-combinaciones-tecnicas-v4';
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const localProfiles=contexts.locations;
 export const localTechnicalProfiles=[
@@ -83,15 +83,32 @@ export const localTechnicalProfiles=[
   ['Antena motorizada para varias posiciones orbitales','Una parabólica motorizada requiere más que orientar una antena fija: recorrido libre, soporte estable, ajuste mecánico y compatibilidad de control con el receptor. Se valora como instalación específica, no como ampliación automática.']
  ]}
 ];
+const technicalHeadings=[
+ 'Tres comprobaciones que pueden cambiar el diagnóstico',
+ 'Antes de sustituir equipos, conviene separar estas causas',
+ 'Tres situaciones técnicas que orientan la revisión',
+ 'Pistas útiles para localizar el origen de una avería',
+ 'Qué puede cambiar la solución de una instalación',
+ 'Tres puntos que merece la pena comprobar primero',
+ 'No todas las averías de señal tienen la misma causa',
+ 'Qué revisar antes de decidir una sustitución'
+];
 export function technicalProfileFor(key){
- const digest=createHash('sha256').update('urgente24-casos-v3:'+String(key)).digest();
- const profile=localTechnicalProfiles[digest[0]%localTechnicalProfiles.length];
- const shift=digest[1]%profile.items.length;
- return {...profile,items:[...profile.items.slice(shift),...profile.items.slice(0,shift)]};
+ const digest=createHash('sha256').update('urgente24-combinaciones-v4:'+String(key)).digest();
+ const total=localTechnicalProfiles.length;
+ const start=digest[0]%total;
+ const step=(digest[1]%(total-1))+1;
+ const familyIndexes=[start,(start+step)%total,(start+2*step)%total];
+ const items=familyIndexes.map((index,i)=>{
+  const family=localTechnicalProfiles[index];
+  return family.items[digest[2+i]%family.items.length];
+ });
+ const combo=createHash('sha256').update(familyIndexes.map((index,i)=>localTechnicalProfiles[index].id+':'+localTechnicalProfiles[index].items.indexOf(items[i])).join('|')).digest('hex').slice(0,12);
+ return {id:'combo-'+combo,heading:technicalHeadings[digest[6]%technicalHeadings.length],items,families:familyIndexes.map(i=>localTechnicalProfiles[i].id)};
 }
 function practicalBlock(place,key){
  const profile=technicalProfileFor(key);
- return '<div class="local-practical" data-local-technical="'+e(profile.id)+'"><span class="kicker">Situaciones que pueden cambiar el diagnóstico</span><h3>'+e(profile.heading)+' en '+e(place)+'</h3><div class="diagnosis">'+profile.items.map(([title,text])=>'<article data-local-case><h3>'+e(title)+'</h3><p>'+e(text)+'</p></article>').join('')+'</div></div>';
+ return '<div class="local-practical" data-local-technical="'+e(profile.id)+'" data-local-families="'+e(profile.families.join(','))+'"><span class="kicker">Situaciones que pueden cambiar el diagnóstico</span><h3>'+e(profile.heading)+' en '+e(place)+'</h3><div class="diagnosis">'+profile.items.map(([title,text])=>'<article data-local-case><h3>'+e(title)+'</h3><p>'+e(text)+'</p></article>').join('')+'</div></div>';
 }
 export const serviceBriefs=[
  {id:'antenas',heading:'Técnico en instalación de antenas',number:'01',label:'Antenas TDT y parabólicas',url:'/servicios/antenas/',request:'Instalación de antenas',image:'antena-televes-dat.png',alt:'Antena Televés DAT BOSS para recepción de televisión TDT',
