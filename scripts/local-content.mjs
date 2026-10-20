@@ -166,7 +166,7 @@ export const serviceBriefs=[
  {id:'amplificacion',heading:'Instalación y reparación de sistemas de amplificación',number:'04',label:'Amplificación y monocanales',url:'/servicios/antenas/#amplificacion',request:'Instalación nueva de sistemas de amplificación',image:'amplificador-monocanal-televes.png',alt:'Amplificador monocanal Televés T12 para una cabecera comunitaria',
  text:'Instalación nueva y reparación de previos, fuentes de alimentación y amplificadores. En comunidades se revisan los módulos monocanal, su alimentación y la distribución antes de decidir qué sustituir.',
  ask:'Indica si faltan todos los canales o un grupo y cuántas viviendas están afectadas. No abras fuentes ni equipos de cabecera.'},
- {id:'porteros',heading:'Técnico en instalación de porteros automáticos',number:'02',label:'Porteros automáticos',url:'/servicios/porteros/',request:'Instalación de porteros automáticos',
+ {id:'porteros',heading:'Técnico en instalación de porteros automáticos',number:'02',label:'Porteros automáticos',url:'/servicios/porteros/',request:'Instalación de porteros automáticos',image:'portero-tegui-linea-3000.jpeg',alt:'Placa de audio Tegui Línea 3000 para portero automático',
  text:'Instalación de placas de calle y telefonillos, renovación de sistemas y reparación de llamada, conversación o apertura. Se verifica la compatibilidad del equipo con la instalación del edificio.',
  ask:'Explica por separado si llama, se oye en ambos sentidos y abre. Para renovar, facilita el número de viviendas y una foto exterior de la placa.'},
  {id:'videoporteros',heading:'Técnico en instalación de videoporteros',number:'03',label:'Videoporteros',url:'/servicios/videoporteros/',request:'Instalación de videoporteros',

@@ -2,10 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
-export const photoNames=['parabolica.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','antena-televes-dat.png','amplificador-monocanal-televes.png','antena-starlink-standard.png'];
+export const photoNames=['parabolica.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','portero-tegui-linea-3000.jpeg','antena-televes-dat.png','amplificador-monocanal-televes.png','antena-starlink-standard.png'];
 export async function prepareImages(root='dist'){
  const {default:sharp}=await import('sharp');const manifest={};
- // Six shared photographs, not a separate set of files for every municipality.
+ // Shared photographs, not a separate set of files for every municipality.
  for(const name of photoNames){
   const input=path.join(root,'assets',name),buffer=fs.readFileSync(input),metadata=await sharp(buffer).metadata();
   assert(metadata.width>0&&metadata.height>0,'Imagen no válida: '+name);
