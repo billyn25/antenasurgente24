@@ -9,3 +9,6 @@
 .municipal-facts dt{font-size:.85rem;color:#526174;line-height:1.5}
 .municipal-facts dd{margin:6px 0 0;font-weight:700;font-size:1.1rem;line-height:1.4;overflow-wrap:anywhere}
 @media(max-width:480px){.municipal-facts{grid-template-columns:minmax(0,1fr);gap:10px}}
+
+/* Integrate the white product photo canvas with each service surface. */
+.local-equipment img[src="/assets/portero-fermax-6201.jpeg"],.local-equipment img[src="/assets/videoportero-tegui-linea-3000.jpeg"]{mix-blend-mode:multiply}

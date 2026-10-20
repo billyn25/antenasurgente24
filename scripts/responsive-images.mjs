@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
-export const photoNames=['parabolica.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','portero-tegui-linea-3000.jpeg','antena-televes-dat.png','amplificador-monocanal-televes.png','antena-starlink-standard.png'];
+export const photoNames=['parabolica.jpeg','portero-fermax.jpeg','portero-tegui.jpeg','portero-tegui-linea-3000.jpeg','portero-fermax-6201.jpeg','videoportero-tegui-linea-3000.jpeg','antena-televes-dat.png','amplificador-monocanal-televes.png','antena-starlink-standard.png'];
 export async function prepareImages(root='dist'){
  const {default:sharp}=await import('sharp');const manifest={};
  // Shared photographs, not a separate set of files for every municipality.
