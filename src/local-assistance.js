@@ -6,7 +6,7 @@
  const hints=()=>{
   if(!help)return;
   const value=service.value.toLowerCase();
-  let advice=value.includes('starlink')?'Indica el modelo del kit, el lugar de montaje y dónde necesitas Wi-Fi.':value.includes('amplifica')||value.includes('monocanal')||value.includes('fuentes')?'Indica qué canales fallan, cuántas viviendas están afectadas y si necesitas instalación nueva o reparación.':value.includes('videoportero')?'Indica marca, número de monitores y si fallan imagen, sonido, llamada o apertura.':value.includes('portero')?'Indica marca, número de viviendas y si falla llamada, audio o apertura.':value.includes('antena')?'Indica si fallan todos los canales, cuántos televisores están afectados o cuántas tomas quieres instalar.':'Selecciona el servicio para ver qué información conviene facilitar.';
+  let advice=value.includes('cofdm')?'Indica el modelo del receptor Movistar u otra fuente HD, el número de pantallas y si deben mostrar el mismo programa.':value.includes('control de acceso')?'Indica cuántas puertas y usuarios habrá, y si prefieres teclado, llaveros o ambos.':value.includes('uhd')||value.includes('resintonizaci')?'Indica el modelo del televisor o receptor y qué canales faltan. Aclara si ocurre también en otros equipos.':value.includes('soporte de tv')?'Indica modelo y tamaño del televisor, tipo de pared y si ya tienes el soporte.':value.includes('aseo accesible')?'Indica dónde está el aseo, dónde debe recibirse el aviso y quién podrá atenderlo.':value.includes('starlink')?'Indica el modelo del kit, el lugar de montaje y dónde necesitas Wi-Fi.':value.includes('amplifica')||value.includes('monocanal')||value.includes('fuentes')?'Indica qué canales fallan, cuántas viviendas están afectadas y si necesitas instalación nueva o reparación.':value.includes('videoportero')?'Indica marca, número de monitores y si fallan imagen, sonido, llamada o apertura.':value.includes('portero')?'Indica marca, número de viviendas y si falla llamada, audio o apertura.':value.includes('antena')?'Indica si fallan todos los canales, cuántos televisores están afectados o cuántas tomas quieres instalar.':'Selecciona el servicio para ver qué información conviene facilitar.';
   const observations={
    'Sin señal en todos los canales':'Anota el mensaje exacto de la pantalla y si otros televisores tienen señal. No restablezcas ni resintonices todos los equipos antes de comprobar si el fallo es compartido.',
    'Pixelación o faltan algunos canales':'Apunta dos o tres canales afectados y cuándo se producen los cortes. Indica si en otra toma ocurre lo mismo; estos datos no bastan para atribuirlo a la antena.',
@@ -24,7 +24,7 @@
   else if(/individual|unifamiliar|particular/i.test(property?.value||''))advice+=' En vivienda individual, concreta las plantas, los equipos y el punto de acceso previsto.';
   help.textContent=advice;
  };
- service.addEventListener('change',hints);hints();
+ service.addEventListener('change',()=>{if(symptom)symptom.value='';hints();});hints();
  [symptom,scope,property].filter(Boolean).forEach(field=>field.addEventListener('change',hints));
  document.querySelectorAll('[data-request-service]').forEach(a=>a.addEventListener('click',()=>{
   const option=[...service.options].find(o=>o.value===a.dataset.requestService);if(!option)return;

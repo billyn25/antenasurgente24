@@ -1,0 +1,480 @@
+{
+  "created_utc": "2026-10-21T12:12:26.602837+00:00",
+  "baseline_public_fetch": "2026-10-21T11:37:49.379827+00:00",
+  "baseline_commit": "87c7ae502670a4a1fd516195b2a9ac05f764e002",
+  "scope": {
+    "same_urls_in_both_versions": 3291,
+    "sitemap_towns": 4035,
+    "coverage": 0.8156133828996283,
+    "total_pairs_in_each_version": 5413695,
+    "provinces": 17,
+    "not_extrapolated_to_other_urls": true
+  },
+  "baseline_control": {
+    "all_html_hashes_match": true,
+    "all_normalized_text_hashes_match": true,
+    "expected_pairwise_mean": 0.7084371682773224,
+    "expected_nearest_mean": 0.8793246271363221,
+    "original_summary_aggregates_reproduced": true,
+    "used_saved_matrix": true
+  },
+  "before": {
+    "pairwise_similarity": {
+      "mean": 0.7084371682773224,
+      "median": 0.700653612613678,
+      "min": 0.5045408606529236,
+      "max": 1.0,
+      "p10": 0.6871795058250427,
+      "p90": 0.7604306936264038
+    },
+    "nearest_similarity": {
+      "mean": 0.8793246271363221,
+      "median": 0.8760563135147095,
+      "min": 0.6914634108543396,
+      "max": 1.0,
+      "p10": 0.8612303137779236,
+      "p90": 0.896652102470398
+    },
+    "towns_with_match_ge_90": 233,
+    "towns_with_match_ge_95": 60,
+    "towns_with_match_ge_99": 2,
+    "pairs_ge_90": 122,
+    "pairs_ge_95": 30,
+    "pairs_at_100": 1,
+    "max_pair": [
+      760,
+      3242
+    ],
+    "core_word_count": {
+      "mean": 659.876937101185,
+      "median": 659.0,
+      "min": 636.0,
+      "max": 759.0,
+      "p10": 650.0,
+      "p90": 669.0
+    },
+    "main_dom_word_count": {
+      "mean": 1288.9380127620784,
+      "median": 1285.0,
+      "min": 1241.0,
+      "max": 1403.0,
+      "p10": 1261.0,
+      "p90": 1322.0
+    },
+    "body_dom_word_count": {
+      "mean": 1558.9380127620784,
+      "median": 1555.0,
+      "min": 1511.0,
+      "max": 1673.0,
+      "p10": 1531.0,
+      "p90": 1592.0
+    },
+    "service_paragraph_word_count": {
+      "mean": 283.0,
+      "median": 283.0,
+      "min": 283.0,
+      "max": 283.0,
+      "p10": 283.0,
+      "p90": 283.0
+    },
+    "faq_word_count": {
+      "mean": 120.0,
+      "median": 120.0,
+      "min": 120.0,
+      "max": 120.0,
+      "p10": 120.0,
+      "p90": 120.0
+    },
+    "documented_local_profiles": 9,
+    "core_case_counts": {
+      "3": 3291
+    },
+    "faq_counts": {
+      "3": 3291
+    },
+    "versions": {
+      "local-combinaciones-tecnicas-v5": 3291
+    },
+    "specialty_pages_by_id": {},
+    "specialty_cards_per_page": {
+      "0": 3291
+    },
+    "services": {
+      "antenas": {
+        "distinct_paragraph_versions": 1,
+        "largest_group": 3291,
+        "paragraph_word_count": {
+          "mean": 61.0,
+          "median": 61.0,
+          "min": 61.0,
+          "max": 61.0,
+          "p10": 61.0,
+          "p90": 61.0
+        }
+      },
+      "amplificacion": {
+        "distinct_paragraph_versions": 1,
+        "largest_group": 3291,
+        "paragraph_word_count": {
+          "mean": 53.0,
+          "median": 53.0,
+          "min": 53.0,
+          "max": 53.0,
+          "p10": 53.0,
+          "p90": 53.0
+        }
+      },
+      "porteros": {
+        "distinct_paragraph_versions": 1,
+        "largest_group": 3291,
+        "paragraph_word_count": {
+          "mean": 58.0,
+          "median": 58.0,
+          "min": 58.0,
+          "max": 58.0,
+          "p10": 58.0,
+          "p90": 58.0
+        }
+      },
+      "videoporteros": {
+        "distinct_paragraph_versions": 1,
+        "largest_group": 3291,
+        "paragraph_word_count": {
+          "mean": 55.0,
+          "median": 55.0,
+          "min": 55.0,
+          "max": 55.0,
+          "p10": 55.0,
+          "p90": 55.0
+        }
+      },
+      "starlink": {
+        "distinct_paragraph_versions": 1,
+        "largest_group": 3291,
+        "paragraph_word_count": {
+          "mean": 56.0,
+          "median": 56.0,
+          "min": 56.0,
+          "max": 56.0,
+          "p10": 56.0,
+          "p90": 56.0
+        }
+      }
+    },
+    "faq_versions": 1,
+    "faq_largest_group": 3291,
+    "service_image_sets": 1,
+    "distinct_normalized_editorial_texts": 3290,
+    "towns_in_exact_normalized_duplicates": 2
+  },
+  "after": {
+    "pairwise_similarity": {
+      "mean": 0.11464124351206065,
+      "median": 0.11675126850605011,
+      "min": 0.03888889029622078,
+      "max": 0.6901408433914185,
+      "p10": 0.06315789371728897,
+      "p90": 0.18478260934352875
+    },
+    "nearest_similarity": {
+      "mean": 0.4388396205763728,
+      "median": 0.43516483902931213,
+      "min": 0.32374101877212524,
+      "max": 0.6901408433914185,
+      "p10": 0.39088982343673706,
+      "p90": 0.4971623122692108
+    },
+    "towns_with_match_ge_90": 0,
+    "towns_with_match_ge_95": 0,
+    "towns_with_match_ge_99": 0,
+    "pairs_ge_90": 0,
+    "pairs_ge_95": 0,
+    "pairs_at_100": 0,
+    "max_pair": [
+      1655,
+      2974
+    ],
+    "core_word_count": {
+      "mean": 656.6903676694014,
+      "median": 656.0,
+      "min": 632.0,
+      "max": 761.0,
+      "p10": 648.0,
+      "p90": 665.0
+    },
+    "main_dom_word_count": {
+      "mean": 1322.542996049833,
+      "median": 1320.0,
+      "min": 1281.0,
+      "max": 1443.0,
+      "p10": 1299.0,
+      "p90": 1350.0
+    },
+    "body_dom_word_count": {
+      "mean": 1592.542996049833,
+      "median": 1590.0,
+      "min": 1551.0,
+      "max": 1713.0,
+      "p10": 1569.0,
+      "p90": 1620.0
+    },
+    "service_paragraph_word_count": {
+      "mean": 278.6192646611972,
+      "median": 279.0,
+      "min": 269.0,
+      "max": 286.0,
+      "p10": 275.0,
+      "p90": 282.0
+    },
+    "faq_word_count": {
+      "mean": 106.52506836827712,
+      "median": 107.0,
+      "min": 98.0,
+      "max": 114.0,
+      "p10": 103.0,
+      "p90": 110.0
+    },
+    "documented_local_profiles": 9,
+    "core_case_counts": {
+      "3": 3291
+    },
+    "faq_counts": {
+      "3": 3291
+    },
+    "versions": {
+      "local-servicios-breves-v6": 3291
+    },
+    "specialty_pages_by_id": {
+      "uhd": 1336,
+      "soporte-tv": 1337,
+      "cofdm": 1287,
+      "aviso-accesible": 1276,
+      "accesos": 1346
+    },
+    "specialty_cards_per_page": {
+      "2": 3291
+    },
+    "services": {
+      "antenas": {
+        "distinct_paragraph_versions": 8,
+        "largest_group": 435,
+        "paragraph_word_count": {
+          "mean": 55.15527195381343,
+          "median": 55.0,
+          "min": 54.0,
+          "max": 57.0,
+          "p10": 54.0,
+          "p90": 57.0
+        }
+      },
+      "amplificacion": {
+        "distinct_paragraph_versions": 8,
+        "largest_group": 432,
+        "paragraph_word_count": {
+          "mean": 55.323913704041324,
+          "median": 55.0,
+          "min": 52.0,
+          "max": 57.0,
+          "p10": 52.0,
+          "p90": 57.0
+        }
+      },
+      "porteros": {
+        "distinct_paragraph_versions": 8,
+        "largest_group": 443,
+        "paragraph_word_count": {
+          "mean": 54.83621999392282,
+          "median": 55.0,
+          "min": 53.0,
+          "max": 57.0,
+          "p10": 53.0,
+          "p90": 57.0
+        }
+      },
+      "videoporteros": {
+        "distinct_paragraph_versions": 8,
+        "largest_group": 457,
+        "paragraph_word_count": {
+          "mean": 56.567000911577026,
+          "median": 57.0,
+          "min": 54.0,
+          "max": 59.0,
+          "p10": 54.0,
+          "p90": 59.0
+        }
+      },
+      "starlink": {
+        "distinct_paragraph_versions": 8,
+        "largest_group": 442,
+        "paragraph_word_count": {
+          "mean": 56.7368580978426,
+          "median": 56.0,
+          "min": 56.0,
+          "max": 58.0,
+          "p10": 56.0,
+          "p90": 58.0
+        }
+      }
+    },
+    "faq_versions": 3093,
+    "faq_largest_group": 4,
+    "service_image_sets": 1,
+    "distinct_normalized_editorial_texts": 3291,
+    "towns_in_exact_normalized_duplicates": 0
+  },
+  "change": {
+    "pairwise_mean_percentage_points": -59.37959247652618,
+    "nearest_mean_percentage_points": -44.04850065599493,
+    "pairwise_mean_relative_change": -0.8381772602490224,
+    "mean_core_words": -3.186569431783596,
+    "relative_mean_core_words_change": -0.004829035919609592,
+    "pages_with_more_core_words": 1084,
+    "pages_with_fewer_core_words": 2058,
+    "pages_with_same_core_words": 149,
+    "per_page_word_change": {
+      "mean": -3.1865694317836524,
+      "median": -3.0,
+      "min": -36.0,
+      "max": 28.0,
+      "p10": -14.0,
+      "p90": 7.0
+    }
+  },
+  "new_card_inclusion_check": {
+    "pages_checked": 3291,
+    "cards_per_page": 3,
+    "every_card_title_and_paragraph_in_measured_core": true
+  },
+  "method": [
+    "HTML público descargado el 21/10/2026: 3291 de 4035 municipios del sitemap. Cobertura incompleta; los resultados no se extrapolan a las páginas no descargadas.",
+    "Contenido editorial dentro de main: introducción, contexto local, casos técnicos, cinco servicios y FAQ.",
+    "Se excluyen navegación, formularios, contactos laterales, botones, distintivo residencial, pies de foto, compromisos y directorio de municipios próximos/población.",
+    "Se normalizan mayúsculas, tildes y puntuación; municipio, provincia y teléfonos se sustituyen por etiquetas. Las cifras técnicas no se eliminan.",
+    "Similitud = secuencias de cinco palabras compartidas / secuencias distintas presentes en cualquiera de las dos páginas.",
+    "Media calculada sobre todas las parejas posibles de las páginas descargadas, sin muestrear parejas. La cobertura de municipios es parcial y por orden alfabético; no es una muestra aleatoria. Se aporta una muestra determinista adicional de parejas para comparar texto literal y normalizado.",
+    "El resultado mide coincidencia textual, no porcentaje de penalización, calidad, indexación ni puntuación de Google.",
+    "La población, capital municipal y localidades próximas se excluyen solo del indicador del núcleo editorial; su presencia y utilidad se reconocen por separado."
+  ],
+  "limitations": [
+    "Before is saved public HTML; after is the generated local build, not proof of deployment.",
+    "The same 3291 URLs from the earlier partial crawl are compared; omitted municipalities are not imputed.",
+    "The metric is lexical overlap of sets of 5-word sequences, not a Google score, a plagiarism rate or a ranking guarantee.",
+    "main_dom_words and body_dom_words include text in form option elements; core_words is the consistent editorial-length measure.",
+    "All existing extraction exclusions and normalization rules are unchanged; new case cards remain inside the measured content."
+  ],
+  "metric_provenance": {
+    "source_sha256": "3d0e26570f0837ca2b626f35e67c3646d9a1aa0ba9eceadc9be91ede95e38d1b",
+    "metric_functions_ast_sha256": "daa4d1cd11ed5301af8554ccf5801863b57080f6b01c3a0774465b91d4c2bd44",
+    "functions_loaded_unchanged": [
+      "canon",
+      "core_root",
+      "grams",
+      "normalized",
+      "pct_stats",
+      "sha",
+      "text_of",
+      "without"
+    ]
+  },
+  "build_validation": {
+    "version": "local-servicios-breves-v6",
+    "localPages": 4056,
+    "researchedMunicipalities": 10,
+    "profileRoutes": [
+      "/provincias/bizkaia/zalla/",
+      "/provincias/burgos/lerma/",
+      "/provincias/leon/astorga/",
+      "/provincias/zamora/puebla-de-sanabria/",
+      "/provincias/avila/arenas-de-san-pedro/",
+      "/provincias/segovia/cuellar/",
+      "/provincias/palencia/aguilar-de-campoo/",
+      "/provincias/soria/almazan/",
+      "/provincias/salamanca/ciudad-rodrigo/",
+      "/provincias/cantabria/reinosa/"
+    ],
+    "technicalFamilies": 24,
+    "technicalCombinations": 3901,
+    "technicalFamilySets": 240,
+    "technicalCasesPerLocalPage": 1,
+    "specialtiesPerLocalPage": 2,
+    "specialtyUsage": {
+      "cofdm": 1590,
+      "accesos": 1660,
+      "uhd": 1647,
+      "soporte-tv": 1650,
+      "aviso-accesible": 1565
+    },
+    "coreCopyVariants": 40,
+    "specialtyCopyVariants": 30,
+    "faqVariants": 70,
+    "responsiveImages": 20292,
+    "photoSources": 9,
+    "originalPhotoBytes": 2720311,
+    "largestVariantsBytes": 361686,
+    "largestVariantSavingPercent": 86.7,
+    "sourcePolicy": "Fuentes territoriales explícitas para hechos locales. Servicios y casos técnicos sin afirmar prevalencia, trabajos ni sedes locales.",
+    "indexingChanged": false
+  },
+  "browser_validation": {
+    "metrics": [
+      {
+        "width": 320,
+        "noOverflow": true,
+        "webpLoaded": true,
+        "imagesCentered": true,
+        "servicePreselection": true,
+        "nucleusMessage": true,
+        "phoneSwitch": true,
+        "cookies": 0
+      },
+      {
+        "width": 390,
+        "noOverflow": true,
+        "webpLoaded": true,
+        "imagesCentered": true,
+        "servicePreselection": true,
+        "nucleusMessage": true,
+        "phoneSwitch": true,
+        "cookies": 0
+      },
+      {
+        "width": 430,
+        "noOverflow": true,
+        "webpLoaded": true,
+        "imagesCentered": true,
+        "servicePreselection": true,
+        "nucleusMessage": true,
+        "phoneSwitch": true,
+        "cookies": 0
+      },
+      {
+        "width": 768,
+        "noOverflow": true,
+        "webpLoaded": true,
+        "imagesCentered": true,
+        "servicePreselection": true,
+        "nucleusMessage": true,
+        "phoneSwitch": true,
+        "cookies": 0
+      },
+      {
+        "width": 1440,
+        "noOverflow": true,
+        "webpLoaded": true,
+        "imagesCentered": true,
+        "servicePreselection": true,
+        "nucleusMessage": true,
+        "phoneSwitch": true,
+        "cookies": 0
+      }
+    ],
+    "specialtiesChecked": [
+      "accesos",
+      "aviso-accesible",
+      "cofdm",
+      "soporte-tv",
+      "uhd"
+    ],
+    "hotelMessage": true
+  }
+}

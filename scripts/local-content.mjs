@@ -3,7 +3,9 @@ import {createHash} from 'node:crypto';
 import contexts from '../config/local-contexts.json' with {type:'json'};
 import {districts} from '../config/madrid-districts.mjs';
 import {section,decode} from './starlink.mjs';
-export const localVersion='local-combinaciones-tecnicas-v5';
+import {coreCopy,introVariants} from './local-core-copy.mjs';
+import {specialties} from './local-specialty-copy.mjs';
+export const localVersion='local-servicios-breves-v6';
 const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const localProfiles=contexts.locations;
 export const localTechnicalProfiles=[
@@ -155,9 +157,28 @@ export function technicalProfileFor(key){
  const headingDigest=createHash('sha256').update(seed+'|heading').digest();
  return {id:'combo-'+combo,heading:technicalHeadings[headingDigest[0]%technicalHeadings.length],items,families};
 }
+const contentCache=new Map();
+const contentHash=(key,part)=>createHash('sha256').update('servicios-breves-v6|'+key+'|'+part).digest();
+const choose=(items,key,part)=>items[contentHash(key,part).readUInt32BE(0)%items.length];
+export function localContentFor(key){
+ if(contentCache.has(key))return contentCache.get(key);
+ // Scenarios describe work we can assess, never a claimed local fault or intervention.
+ // Select once per URL so rebuilding does not rotate the information visitors see.
+ const core=Object.fromEntries(Object.entries(coreCopy).map(([id,items])=>[id,choose(items,key,'core:'+id)]));
+ const selected=specialties.map(s=>({s,rank:contentHash(key,'specialty:'+s.id).toString('hex')})).sort((a,b)=>a.rank.localeCompare(b.rank)).slice(0,2).map(({s})=>({id:s.id,label:s.label,request:s.request,variant:choose(s.variants,key,'variant:'+s.id)}));
+ const technical=technicalProfileFor(key),[title,text]=technical.items[0];
+ const diagnostic={family:technical.families[0],title,text};
+ const faqCore=choose(Object.values(core),key,'faq');
+ const faq=[...selected.map(s=>s.variant),faqCore].map(v=>({id:v.id,question:v.question,answer:v.answer}));
+ const signature=[...selected.map(s=>s.variant.id),diagnostic.family,title].join('|');
+ const result={core,specialties:selected,diagnostic,faq,intro:choose(introVariants,key,'intro'),id:'brief-'+createHash('sha256').update(signature).digest('hex').slice(0,12)};
+ contentCache.set(key,result);return result;
+}
 function practicalBlock(place,key){
- const profile=technicalProfileFor(key);
- return '<div class="local-practical" data-local-technical="'+e(profile.id)+'" data-local-families="'+e(profile.families.join(','))+'"><span class="kicker">Situaciones que pueden cambiar el diagnóstico</span><h3>'+e(profile.heading)+' en '+e(place)+'</h3><div class="diagnosis">'+profile.items.map(([title,text])=>'<article data-local-case><h3>'+e(title)+'</h3><p>'+e(text)+'</p></article>').join('')+'</div></div>';
+ const content=localContentFor(key),families=[...content.specialties.map(s=>s.id),content.diagnostic.family];
+ const cards=content.specialties.map(s=>'<article data-local-case data-specialty="'+e(s.id)+'" data-specialty-copy="'+e(s.variant.id)+'" id="'+e(s.id)+'"><h3>'+e(s.variant.title)+'</h3><p>'+e(s.variant.text)+'</p><a class="text-link" href="#contacto" data-request-service="'+e(s.request)+'">Consultar '+e(s.label)+' ↗</a></article>').join('');
+ const diagnostic='<article data-local-case data-diagnostic="'+e(content.diagnostic.family)+'"><h3>'+e(content.diagnostic.title)+'</h3><p>'+e(content.diagnostic.text)+'</p></article>';
+ return '<div class="local-practical" data-local-technical="'+content.id+'" data-local-families="'+e(families.join(','))+'"><span class="kicker">Más opciones para tu instalación</span><h3>Servicios y comprobaciones en '+e(place)+'</h3><div class="diagnosis">'+cards+diagnostic+'</div></div>';
 }
 export const serviceBriefs=[
  {id:'antenas',heading:'Técnico en instalación de antenas',number:'01',label:'Antenas TDT y parabólicas',url:'/servicios/antenas/',request:'Instalación de antenas',image:'antena-televes-dat.png',alt:'Antena Televés DAT BOSS para recepción de televisión TDT',
@@ -180,14 +201,20 @@ function nameOf(html){
  const h=html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/);assert(h);
  return decode(h[1].replace(/<br\s*\/?\s*>/g,' ').replace(/<[^>]+>/g,'')).replace(/^Antenista en\s*/,'').replace(/\.$/,'').trim();
 }
-function brief(s,place){
+function brief(s,place,copy){
  const figure=s.image?`<figure class="local-equipment"><img src="/assets/${s.image}" alt="${e(s.alt)}" width="800" height="800" loading="lazy" decoding="async"><figcaption>Equipo de referencia</figcaption></figure>`:'';
- return `<section class="service-detail local-service-brief" id="${s.id}"><div><span class="kicker">${s.number} / ${s.label}</span><h2>${s.heading} en ${e(place)}</h2>${figure}</div><div><p>${s.text}</p><p><strong>Para preparar el aviso:</strong> ${s.ask}</p><div class="actions"><a class="text-link" href="#contacto" data-request-service="${e(s.request)}">Consultar este servicio ↗</a><a class="local-guide-link" href="${s.url}">Ver la guía de ${e(s.label.toLowerCase())} ↗</a></div></div></section>`;
+ return `<section class="service-detail local-service-brief" id="${s.id}" data-service-copy="${e(copy.id)}"><div><span class="kicker">${s.number} / ${s.label}</span><h2>${s.heading} en ${e(place)}</h2>${figure}</div><div><p>${e(copy.text)}</p><p><strong>Al consultar:</strong> ${e(copy.ask)}</p><div class="actions"><a class="text-link" href="#contacto" data-request-service="${e(s.request)}">Consultar este servicio ↗</a><a class="local-guide-link" href="${s.url}">Ver la guía de ${e(s.label.toLowerCase())} ↗</a></div></div></section>`;
 }
 function profileBlock(profile,place,key){
  return `<section class="context-box local-address-guide" id="direccion-local"><span class="kicker">Tu dirección, bien identificada</span><h2>${e(profile.heading)}</h2>${profile.paragraphs.map(t=>'<p>'+e(t)+'</p>').join('')}${(profile.related||[]).map(r=>'<p><a class="text-link" href="'+e(r.url)+'">'+e(r.label)+' ↗</a></p>').join('')}<p class="local-source">Referencias de localidad: ${profile.sources.map(s=>'<a href="'+e(s.url)+'" target="_blank" rel="noopener noreferrer">'+e(s.label)+'</a>').join(' · ')}</p>${practicalBlock(place,key)}</section>`;
 }
 function enrichForm(html,p,profile){
+ const serviceSelect=/(<select name="servicio"[^>]*>)([\s\S]*?)(<\/select>)/;
+ const propertySelect=/(<select name="inmueble"[^>]*>)([\s\S]*?)(<\/select>)/;
+ assert(serviceSelect.test(html),'Falta selector de servicio '+p.url);assert(propertySelect.test(html),'Falta selector de inmueble '+p.url);
+ html=html.replace(serviceSelect,(_,start,options,end)=>start+options+specialties.map(s=>'<option>'+e(s.request)+'</option>').join('')+end);
+ html=html.replace(propertySelect,(_,start,options,end)=>start+options.replace('Selecciona vivienda o comunidad','Selecciona tipo de inmueble')+'<option>Local comercial</option><option>Bar o restaurante</option><option>Hotel o alojamiento</option>'+end);
+ html=html.replace('Tipo de instalación<select name="inmueble"','Tipo de inmueble<select name="inmueble"');
  const district=p.type==='district'?districts.find(d=>d.slug===p.district):null;
  const examples=district?.barrios||profile?.examples||[];
  const title=district?'Barrio de Madrid (opcional)':'Barrio o localidad dentro del municipio (opcional)';
@@ -195,14 +222,19 @@ function enrichForm(html,p,profile){
  const anchor='<label>Tu teléfono (opcional)';assert(html.includes(anchor),'Formulario local no reconocido');
  html=html.replace(anchor,field+anchor);
  const textarea='<label class="wide">Cuéntanos qué ocurre';assert(html.includes(textarea));
- const symptoms='<label>Qué necesitas (opcional)<select name="sintoma"><option value="">Selecciona el problema</option><optgroup label="Antenas y amplificación"><option>Sin señal en todos los canales</option><option>Pixelación o faltan algunos canales</option><option>Una toma funciona y otra no</option></optgroup><optgroup label="Porteros automáticos y videoporteros"><option>No suena la llamada</option><option>No se oye o solo se oye en un sentido</option><option>No abre la puerta</option><option>Videoportero sin imagen</option></optgroup><optgroup label="Starlink"><option>Montaje de un kit Starlink nuevo</option><option>Reubicación de una antena Starlink</option></optgroup><option>Instalación nueva o renovación</option><option>Otro problema</option></select></label><label>A quién afecta (opcional)<select name="alcance"><option value="">Sin confirmar</option><option>Solo un equipo o una toma</option><option>Toda mi vivienda</option><option>Varias viviendas de la comunidad</option><option>Toda la comunidad</option><option>Es una instalación nueva</option></select></label>';
+ const symptoms='<label>Qué necesitas (opcional)<select name="sintoma"><option value="">Selecciona el problema</option><optgroup label="Antenas y amplificación"><option>Sin señal en todos los canales</option><option>Pixelación o faltan algunos canales</option><option>Una toma funciona y otra no</option></optgroup><optgroup label="Porteros automáticos y videoporteros"><option>No suena la llamada</option><option>No se oye o solo se oye en un sentido</option><option>No abre la puerta</option><option>Videoportero sin imagen</option></optgroup><optgroup label="Starlink"><option>Montaje de un kit Starlink nuevo</option><option>Reubicación de una antena Starlink</option></optgroup><option>Instalación nueva o renovación</option><option>Otro problema</option></select></label><label>A quién afecta (opcional)<select name="alcance"><option value="">Sin confirmar</option><option>Solo un equipo o una toma</option><option>Toda mi vivienda</option><option>Varias viviendas de la comunidad</option><option>Toda la comunidad</option><option>Un local o varias habitaciones del hotel</option><option>Es una instalación nueva</option></select></label>';
  html=html.replace(textarea,symptoms+'<p class="wide service-request-help" id="service-request-help" role="status">Selecciona el servicio para ver qué información conviene facilitar.</p>'+textarea);
  return html;
 }
 export function improveLocalContent(html,p){
  if(!['town','district'].includes(p.type))return html;
- const place=nameOf(html),profile=localProfiles[p.url];
- for(const s of serviceBriefs)html=html.replace(section(html,s.id),()=>brief(s,place));
+ const place=nameOf(html),profile=localProfiles[p.url],content=localContentFor(p.url);
+ html=html.replace('<strong>Servicios para viviendas y comunidades</strong>','<strong>Viviendas, comunidades y locales</strong>');
+ for(const s of serviceBriefs)html=html.replace(section(html,s.id),()=>brief(s,place,content.core[s.id]));
+ html=html.replace(/<section class="local-hero\b[^"]*"[^>]*>[\s\S]*?<\/section>/,hero=>{
+  const intro='<p class="muted">'+e(content.intro)+'</p>';
+  return /<p class="muted">/.test(hero)?hero.replace(/<p class="muted">[\s\S]*?<\/p>/,()=>intro):hero.replace(/<p class="lead">[\s\S]*?<\/p>/,lead=>lead+intro);
+ });
  // Do not invent geographical facts or claim that a fault is prevalent in a town.
  // Researched local facts remain sourced; the technical cases below are stable diagnostic scenarios, not local claims.
  if(profile){
@@ -210,15 +242,15 @@ export function improveLocalContent(html,p){
   html=html.replace(old[0],()=>profileBlock(profile,place,p.url));
  }else if(p.type==='town'){
   const old=html.match(/<section class="context-box">[\s\S]*?<\/section>/);assert(old,'Falta contexto municipal '+p.url);
-  html=html.replace(old[0],()=>'<section class="context-box local-address-guide"><h2>Tu aviso en '+e(place)+'</h2><p>Selecciona el servicio y el tipo de inmueble. La consulta conserva tu municipio y el teléfono de la provincia; puedes añadir el barrio o núcleo antes de abrir WhatsApp.</p>'+practicalBlock(place,p.url)+'</section>');
+  html=html.replace(old[0],()=>'<section class="context-box local-address-guide"><h2>Tu aviso en '+e(place)+'</h2><p>Indica el trabajo que necesitas, el tipo de inmueble y tu dirección para preparar la consulta.</p>'+practicalBlock(place,p.url)+'</section>');
  }else{
   const old=html.match(/<section class="context-box district-context">[\s\S]*?<\/section>/);assert(old,'Falta contexto distrital '+p.url);
   html=html.replace(old[0],()=>old[0]+practicalBlock(place,p.url));
  }
  html=enrichForm(html,p,profile);
- // These installation answers repeat the service blocks immediately above.
- // Keep the practical booking, availability and budget questions.
- if(p.type==='town')html=html.replace(/<details><summary>¿(?:Instaláis porteros automáticos|Puedo cambiar a videoportero) en [\s\S]*?<\/details>/g,'');
+ const faqBlock=/<section class="section wrap faq-wrap">[\s\S]*?<\/section>/;
+ assert(faqBlock.test(html),'Faltan preguntas locales '+p.url);
+ html=html.replace(faqBlock,()=>'<section class="section wrap faq-wrap" data-local-faq><h2>Antes de preparar tu instalación.</h2><div class="faq">'+content.faq.map(f=>'<details data-faq-copy="'+e(f.id)+'"><summary>'+e(f.question)+'</summary><p>'+e(f.answer)+'</p></details>').join('')+'</div></section>');
  // The application builds a message locally; these attributes do not send data.
  html=html.replace('<main id="contenido">','<main id="contenido" data-local-version="'+localVersion+'">');
  return html;

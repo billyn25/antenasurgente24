@@ -12,4 +12,9 @@ scope.change('Varias viviendas de la comunidad');assert(help.textContent.include
 symptom.change('No abre la puerta');assert(help.textContent.includes('No fuerces la puerta'));
 scope.change('Solo un equipo o una toma');property.change('Comunidad');symptom.change('Pixelación o faltan algunos canales');assert(help.textContent.includes('dos o tres canales'));assert(!help.textContent.includes('autorizar la intervención'));
 symptom.change('');service.change('Instalación de antenas Starlink');assert(help.textContent.includes('modelo del kit'));
+symptom.change('No abre la puerta');service.change('Modulación COFDM para bares y hoteles');assert.equal(symptom.value,'');assert(help.textContent.includes('Movistar'));assert(!help.textContent.includes('No fuerces la puerta'));
+service.change('Control de acceso con teclado o llavero');assert(help.textContent.includes('puertas y usuarios'));
+service.change('Resintonización TDT y comprobación UHD');assert(help.textContent.includes('qué canales faltan'));
+service.change('Montaje de soporte de TV');assert(help.textContent.includes('tipo de pared'));
+service.change('Kit de aviso para aseo accesible');assert(help.textContent.includes('quién podrá atenderlo'));
 console.log('ASISTENCIA OK: consejos por avería y alcance; vivienda individual, comunidad y cambios de selección sin consejos obsoletos.');
