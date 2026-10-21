@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {section,decode,fileFor} from './starlink.mjs';
-import {localProfiles,localContentFor} from './local-content.mjs';
+import {localProfiles} from './local-content.mjs';
+import {specialties} from './local-specialty-copy.mjs';
 export const VERSION='pueblos-servicios-breves-v2';
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const json=v=>JSON.stringify(v).replace(/</g,'\\u003c');
@@ -47,7 +48,7 @@ function updateDescription(html,p,description){
  html=html.replace(/<meta name="description" content="[^"]*">/,()=>`<meta name="description" content="${escape(description)}">`);
  html=html.replace(/<meta property="og:description" content="[^"]*">/,()=>`<meta property="og:description" content="${escape(description)}">`);
  return html.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g,(_,a,b,c)=>{
-  const data=JSON.parse(b);for(const node of data['@graph']||[]){if(node['@type']==='WebPage')node.description=description;if(node['@type']==='Service'&&node.url?.endsWith(p.url))node.serviceType=['Instalación y reparación de antenas TDT y parabólicas','Amplificadores y cabeceras','Porteros automáticos','Videoporteros','Instalación de Starlink',...localContentFor(p.url).specialties.map(s=>s.request)];}return a+json(data)+c;
+  const data=JSON.parse(b);for(const node of data['@graph']||[]){if(node['@type']==='WebPage')node.description=description;if(node['@type']==='Service'&&node.url?.endsWith(p.url))node.serviceType=['Instalación y reparación de antenas TDT y parabólicas','Amplificadores y cabeceras','Porteros automáticos','Videoporteros','Instalación de Starlink',...specialties.map(s=>s.request)];}return a+json(data)+c;
  });
 }
 export function transform(html,p,provinceName){
@@ -106,7 +107,7 @@ export function audit(root='dist',requireBoost=true){
    const num=['madrid','guadalajara','toledo','cuenca'].includes(p.province)?'34614789945':'34641589394';
    assert.equal(p.phone.replaceAll(' ',''),num.slice(2));assert(html.includes(`href="tel:+${num}"`));
    for(const s of ['antenas','amplificacion','porteros','videoporteros','starlink'])assert(ids.get(p.url).has(s));
-   if(requireBoost){assert(html.includes(marker));assert.equal((html.match(/data-request-service=/g)||[]).length,11);for(const s of repairs){assert(html.includes(`data-request-service="${s.request}"`));assert(html.includes(`href="${s.guide}"`));summary.repairSelections++;}assert(!html.includes('trabajo acordado; </p>'));}
+   if(requireBoost){assert(html.includes(marker));assert.equal((html.match(/data-request-service=/g)||[]).length,16);for(const s of repairs){assert(html.includes(`data-request-service="${s.request}"`));assert(html.includes(`href="${s.guide}"`));summary.repairSelections++;}assert(!html.includes('trabajo acordado; </p>'));}
   }
   if(guides[p.url]&&requireBoost){summary.serviceGuides++;assert(html.includes('data-town-guide="'+VERSION+'"'));}
  }

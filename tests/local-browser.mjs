@@ -1,9 +1,10 @@
 import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import assert from 'node:assert/strict';import {chromium} from 'playwright';
+import {specialties} from '../scripts/local-specialty-copy.mjs';
 const root=path.resolve('dist'),out='browser-artifacts';fs.mkdirSync(out,{recursive:true});
 const types={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'application/javascript','.json':'application/json','.png':'image/png','.webp':'image/webp','.jpeg':'image/jpeg','.svg':'image/svg+xml'};
 const csp=fs.readFileSync(root+'/_headers','utf8').match(/Content-Security-Policy: ([^\n]+)/)[1];
 const server=http.createServer((req,res)=>{const u=new URL(req.url,'http://localhost'),f=path.resolve(root,'.'+u.pathname+(u.pathname.endsWith('/')?'index.html':''));if(!f.startsWith(root+path.sep)||!fs.existsSync(f)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',types[path.extname(f)]||'application/octet-stream');res.setHeader('Content-Security-Policy',csp);res.end(fs.readFileSync(f));});
-await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port,browser=await chromium.launch({headless:true,executablePath:process.env.TEST_CHROMIUM_EXECUTABLE_PATH||undefined}),metrics=[],specialtiesChecked=new Set();
+await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port,browser=await chromium.launch({headless:true,executablePath:process.env.TEST_CHROMIUM_EXECUTABLE_PATH||undefined}),metrics=[],specialtiesChecked=new Set(),catalogueSelections=new Set();
 try{
  for(const width of [320,390,430,768,1440]){
   const context=await browser.newContext({viewport:{width,height:900},deviceScaleFactor:2}),p=await context.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
@@ -12,8 +13,24 @@ try{
    await p.locator('img[srcset]').evaluateAll(imgs=>Promise.all(imgs.map(i=>{i.loading='eager';return i.decode();})));
    const imgs=await p.locator('img[srcset]').evaluateAll(imgs=>imgs.map(i=>({src:i.currentSrc,loaded:i.naturalWidth})));assert(imgs.every(i=>i.loaded>0&&i.src.endsWith('.webp')),'Foto sin optimizar');
    if(route!=='/'){
+    const catalogue=p.locator('nav.local-nav[data-service-catalogue="10"]'),entries=catalogue.locator('a[data-catalogue-service]');
+    assert.equal(await catalogue.count(),1,'Falta catálogo completo '+route);assert.equal(await entries.count(),10,'Deben verse diez servicios '+route);
+    for(const entry of await entries.all()){assert(await entry.isVisible(),'Servicio oculto '+route+' '+width);assert((await entry.innerText()).trim().length>0);}
+    const numberLines=await catalogue.locator('.catalogue-number').evaluateAll(nodes=>nodes.map(n=>{const range=document.createRange();range.selectNodeContents(n);return range.getClientRects().length;}));
+    assert.equal(numberLines.length,10);assert(numberLines.every(n=>n===1),'Numeración partida en el catálogo '+route+' '+width);
+    const coreLinks=catalogue.locator('a[data-catalogue-service]:not([data-request-service])');assert.equal(await coreLinks.count(),5);
+    for(const link of await coreLinks.all()){const target=await link.getAttribute('href');assert(target?.startsWith('#'));assert.equal(await p.locator(target).count(),1,'Destino de servicio inexistente '+target+' '+route);}
+    assert.equal(await catalogue.locator('a[data-request-service]').count(),5);
+    for(const specialty of specialties){const link=catalogue.locator('a[data-catalogue-service="'+specialty.id+'"]');assert.equal(await link.count(),1);assert.equal(await link.getAttribute('href'),'#contacto');assert.equal(await link.getAttribute('data-request-service'),specialty.request);}
     const centered=await p.locator('.local-equipment img').evaluateAll(imgs=>imgs.map(img=>{const a=img.getBoundingClientRect(),b=img.closest('figure').getBoundingClientRect();return Math.abs((a.left+a.right)/2-(b.left+b.right)/2)<=1;}));
     assert.equal(centered.length,5);assert(centered.every(Boolean),'Imágenes sin centrar '+route+' '+width);
+    if(width===390){
+     if(route.includes('lerma'))await catalogue.screenshot({path:out+'/lerma-catalogo-390.png'});
+     for(const specialty of specialties){
+      await p.selectOption('[name="sintoma"]',{label:'No abre la puerta'});await catalogue.locator('a[data-catalogue-service="'+specialty.id+'"]').click();
+      assert.equal(await p.inputValue('[name="servicio"]'),specialty.request,'El catálogo no selecciona '+specialty.id+' '+route);assert.equal(await p.inputValue('[name="sintoma"]'),'');assert(!(await p.locator('#service-request-help').innerText()).includes('No fuerces la puerta'));catalogueSelections.add(route+'#'+specialty.id);
+     }
+    }
    }
    if(width===390&&route.includes('lerma')){await p.locator('#direccion-local').screenshot({path:out+'/lerma-contexto-390.png'});await p.locator('#antenas').screenshot({path:out+'/lerma-servicio-390.png'});}
    if(width===390&&route!=='/'){
@@ -34,8 +51,9 @@ try{
   await p.selectOption('[name="provincia"]','madrid');await p.fill('[name="municipio"]','Madrid');assert.equal(await p.inputValue('[name="nucleo"]'),'');
   await p.locator('#whatsapp-aviso').evaluate(f=>f.requestSubmit());assert((await p.evaluate(()=>window.testMessage)).includes('34614789945'));
   assert.equal((await context.cookies()).length,0);assert.equal(await p.evaluate(()=>localStorage.length+sessionStorage.length),0);assert.equal(errors.length,0,errors.join('\n'));
-  metrics.push({width,noOverflow:true,webpLoaded:true,imagesCentered:true,servicePreselection:true,nucleusMessage:true,phoneSwitch:true,cookies:0});await context.close();
+  metrics.push({width,noOverflow:true,webpLoaded:true,imagesCentered:true,visibleCatalogueServices:10,servicePreselection:true,nucleusMessage:true,phoneSwitch:true,cookies:0});await context.close();
  }
  assert.equal(specialtiesChecked.size,5,'Deben comprobarse las cinco especialidades en navegador');
- fs.writeFileSync(out+'/local-browser.json',JSON.stringify({metrics,specialtiesChecked:[...specialtiesChecked],hotelMessage:true},null,2));console.log('LOCAL NAVEGADOR OK: '+JSON.stringify({metrics,specialtiesChecked:[...specialtiesChecked],hotelMessage:true}));
+ assert.equal(catalogueSelections.size,25,'Deben funcionar las cinco especialidades en cada una de las cinco fichas');
+ fs.writeFileSync(out+'/local-browser.json',JSON.stringify({metrics,specialtiesChecked:[...specialtiesChecked],catalogueSelections:catalogueSelections.size,hotelMessage:true},null,2));console.log('LOCAL NAVEGADOR OK: '+JSON.stringify({metrics,specialtiesChecked:[...specialtiesChecked],catalogueSelections:catalogueSelections.size,hotelMessage:true}));
 }finally{await browser.close();server.close();}

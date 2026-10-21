@@ -11,10 +11,11 @@ import {localVersion,localProfiles,improveLocalContent,addServiceResources} from
 import {prepareImages,responsiveHtml} from './responsive-images.mjs';
 import {addFooterContacts,footerContactStyles} from './footer-contacts.mjs';
 import {addLocalGeography} from './local-geography.mjs';
+import {serviceCatalogue,showServiceCatalogue} from './service-catalogue.mjs';
 export const version='local-util-imagenes-v2';
 const e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const hash=s=>createHash('sha256').update(s).digest('hex').slice(0,12);
-const catalogue=[['Antenas TDT y parabólicas','/servicios/antenas/','parabolica.jpeg'],['Porteros automáticos','/servicios/porteros/','portero-fermax.jpeg'],['Videoporteros','/servicios/videoporteros/','portero-tegui.jpeg'],['Sistemas de amplificación','/servicios/antenas/#amplificacion','amplificador-monocanal-televes.png'],['Instalación de antenas Starlink','/servicios/starlink/','antena-starlink-standard.png']];
+const catalogue=serviceCatalogue.map(s=>[s.label,s.url,s.image]);
 export function conciseLocal(html){
  // Move repeated background explanation to the linked service guides, not to
  // synonym-generated "unique" copies. All five local services and photos stay.
@@ -73,6 +74,7 @@ export async function applyClosure(root='dist',preparedImages=null){
   html=html.replace('</body>',panel+'</body>');
   html=html.replace('<button class="btn btn-green wide" type="submit">','<button class="btn btn-green wide" type="submit" disabled data-whatsapp-ready>');
   html=addServiceResources(html,p);
+  html=showServiceCatalogue(html,p);
   html=updateSchema(html,p,base);
   html=addFooterContacts(html);
   html=responsiveHtml(html,p,images);
@@ -90,7 +92,7 @@ export async function applyClosure(root='dist',preparedImages=null){
  fs.writeFileSync(path.join(root,'_headers'),'/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: '+csp+'\n'+(deployment.publicBuild?'':'  X-Robots-Tag: noindex, follow\n')+'/assets/*\n  Cache-Control: public, max-age=3600\n'+['build-report.json','navigation-audit.json','starlink-audit.json','closure-audit.json','seo-audit.json','media-report.json','local-improvements.json'].map(f=>'/'+f+'\n  X-Robots-Tag: noindex\n').join(''));
  fs.appendFileSync(path.join(root,'_headers'),Object.values(images).flatMap(entry=>entry.variants).map(v=>'/assets/'+v.file+'\n  Cache-Control: public, max-age=31536000, immutable\n').join(''));
  fs.writeFileSync(path.join(root,'media-report.json'),JSON.stringify(images,null,2));
- report.localImprovements={version:localVersion,localPages:compacted,researchedProfiles:Object.keys(localProfiles),districtNeighborhoodSelectors:21,responsivePhotos:Object.keys(images).length};
+ report.localImprovements={version:localVersion,localPages:compacted,researchedProfiles:Object.keys(localProfiles),districtNeighborhoodSelectors:21,responsivePhotos:Object.keys(images).length,visibleServices:serviceCatalogue.length};
  report.base=base;report.closure={version,ownerLabel:'R.F.G.',css,js,compactedPages:compacted,stylesheets:1,optionalCookies:false,indexingChanged:false,localContentReview:'Diez contextos municipales documentados, servicios abreviados y selección de barrio en las fichas. La información compartida no se considera contenido exclusivo.'};
  fs.writeFileSync(reportPath,JSON.stringify(report,null,2));console.log('CIERRE APLICADO: canonical estable, redirecciones forzadas, R.F.G., privacidad sin rastreo, una hoja CSS y un JS; '+compacted+' fichas sin bloques redundantes.');
 }

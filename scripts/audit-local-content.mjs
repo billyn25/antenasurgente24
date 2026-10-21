@@ -11,7 +11,7 @@ for(const [name,entry] of Object.entries(images)){
 for(const p of report.pages){
  const html=fs.readFileSync(fileFor(root,p.url),'utf8');
  if(['town','district'].includes(p.type)){
-  assert(html.includes('data-local-version="'+localVersion+'"'));assert(html.includes('name="nucleo"'));assert.equal((html.match(/data-request-service=/g)||[]).length,11);
+  assert(html.includes('data-local-version="'+localVersion+'"'));assert(html.includes('name="nucleo"'));assert.equal((html.match(/data-request-service=/g)||[]).length,16);
   const technical=html.match(/data-local-technical="([^"]+)"/);assert(technical,p.url+': falta combinación de servicios y diagnóstico');technicalUsed.add(technical[1]);
   const families=html.match(/data-local-families="([^"]+)"/);assert(families,p.url+': faltan familias');const familyList=families[1].split(',');assert.equal(new Set(familyList).size,3,p.url+': las tres familias deben ser distintas');familySets.add([...familyList].sort().join('|'));assert.equal((html.match(/data-local-case/g)||[]).length,3,p.url+': se esperaban 3 tarjetas');
   const cards=[...html.matchAll(/data-specialty="([^"]+)" data-specialty-copy="([^"]+)"/g)];assert.equal(cards.length,2,p.url+': dos servicios complementarios');assert.equal(new Set(cards.map(m=>m[1])).size,2);

@@ -14,7 +14,7 @@ try{
  for(let i=0;i<24;i++){
   try{
    const {r,text}=await read(origin+'/build-report.json?launch='+Date.now());assert.equal(r.status,200);
-   report=JSON.parse(text);assert.equal(report.base,origin);assert.equal(report.publicBuild,true);assert(report.pages.filter(p=>!p.noindex).length===4081);break;
+   report=JSON.parse(text);assert.equal(report.base,origin);assert.equal(report.publicBuild,true);assert.equal(report.localImprovements?.visibleServices,10,'La versión pública aún no muestra los diez servicios');assert(report.pages.filter(p=>!p.noindex).length===4081);break;
   }catch(error){result.lastObservation=error.message;if(i===23)throw error;await new Promise(r=>setTimeout(r,4000));}
  }
  const index=await read(origin+'/sitemap.xml');assert.equal(index.r.status,200);assert(index.text.includes('<sitemapindex'));assert(!index.text.includes('.netlify.app'));
@@ -39,12 +39,12 @@ try{
   const {r}=await read(url);assert([301,308].includes(r.status),'No redirige: '+url+' '+r.status);assert.equal(new URL(r.headers.get('location'),url).href,dest);result.redirects.push({url,status:r.status,to:dest});
  }
  const missing=await read(origin+'/no-existe-verificacion-indexacion/');assert.equal(missing.r.status,404);result.missingPageStatus=404;
- const browser=await chromium.launch({headless:true});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.TEST_CHROMIUM_EXECUTABLE_PATH||undefined});
  try{
   const ctx=await browser.newContext({viewport:{width:390,height:844}}),page=await ctx.newPage(),requests=[],errors=[];
   page.on('request',r=>requests.push(r.url()));page.on('pageerror',e=>errors.push(e.message));
   await page.goto(origin+'/',{waitUntil:'networkidle'});
-  assert.equal(await page.locator('#servicios .service-card').count(),5);assert((await page.locator('.contact-north').innerText()).includes('CASTILLA Y LEÓN'));
+  assert.equal(await page.locator('#servicios .service-card').count(),10);assert((await page.locator('.contact-north').innerText()).includes('CASTILLA Y LEÓN'));
   assert.equal(await page.locator('[data-whatsapp-ready]').isDisabled(),false);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.screenshot({path:'browser-artifacts/publicacion-com-390.png'});
   await page.locator('[data-privacy-open]').click();assert(await page.locator('#privacy-panel').isVisible());await page.keyboard.press('Escape');

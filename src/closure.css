@@ -3,6 +3,23 @@
 .local-practical .diagnosis article>.text-link{margin-top:auto;padding-top:16px;font-size:.85rem;line-height:1.5;min-height:44px;overflow-wrap:anywhere}
 .local-service-brief .local-equipment{text-align:center}
 .local-service-brief .local-equipment img{display:block;margin:0 auto}
+/* Ten visible services; only the selected local cases need additional prose. */
+.page-home #servicios [data-catalogue-service]{scroll-margin-top:110px}
+.page-home #servicios .service-card-specialty{display:flex;border-top:3px solid var(--accent,#245bdb)}
+.page-home #servicios .service-card-specialty .card-body{min-height:0}
+.page-home #servicios .service-card-specialty .text-link{min-height:44px;line-height:1.5}
+.local-nav[data-service-catalogue]{display:block}
+.local-nav .catalogue-heading{display:block;font-size:1rem;margin:0 0 14px}
+.local-nav .service-shortcuts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.local-nav .service-shortcuts a{display:flex;align-items:center;gap:9px;min-width:0;min-height:58px;padding:12px 10px;border:1px solid var(--line);line-height:1.45;overflow-wrap:anywhere}
+.local-nav .service-shortcuts a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.local-nav .catalogue-number{flex:0 0 2ch;white-space:nowrap;color:var(--accent);font-size:.7rem;font-variant-numeric:tabular-nums}
+.local-nav .catalogue-arrow{flex:0 0 auto;margin-left:auto;color:var(--accent)}
+.footer .footer-directory-link{display:block;margin-top:20px;color:#e0e7f1;font-size:.8rem;text-decoration:underline;text-underline-offset:3px}
+@media(min-width:761px) and (max-width:1199px){.page-home #servicios .cards{grid-template-columns:repeat(2,minmax(0,1fr))}.page-home #servicios .service-card:nth-child(n){grid-column:auto}}
+@media(max-width:1100px){.local-nav .service-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.page-home #servicios .service-card-specialty .card-body{padding:20px}.page-home #servicios .service-card-specialty h3{font-size:1.12rem}.page-home #servicios .service-card-specialty .card-number{margin-bottom:12px}.page-home #servicios .service-card-specialty .text-link{font-size:.85rem}}
+@media(max-width:420px){.local-nav .service-shortcuts{grid-template-columns:minmax(0,1fr);gap:7px}.local-nav .service-shortcuts a{min-height:44px;padding:10px 12px}}
 /* Small, user-opened privacy panel; it never covers the initial view. */
 .privacy-panel{border:1px solid #d5dfef;border-radius:16px;padding:28px;color:#14243b;background:#fff;width:min(540px,calc(100% - 32px));max-height:calc(100dvh - 40px);overflow:auto;box-shadow:0 16px 60px #14243b33}
 .privacy-panel::backdrop{background:#14243b88}.privacy-panel h2{font-size:1.5rem;letter-spacing:-.02em;margin:0 0 16px;padding-right:25px}.privacy-panel p{font-size:.95rem;line-height:1.65}.privacy-panel .privacy-close{position:absolute;right:15px;top:12px;min-width:44px;min-height:44px;border:0;background:transparent;color:#14243b;font-size:1.5rem;cursor:pointer}.privacy-panel .actions{gap:12px}.legal-owner{padding:18px 22px;border-left:3px solid #245bdb;background:#edf3ff;border-radius:5px}.footer-owner{color:#e9f1ff}.btn[disabled]{cursor:wait;opacity:.65}
